@@ -1,24 +1,24 @@
-//Binary powering
+//Binary exponentiation
 
 
 #include <stdio.h>
 
-int f(int a, int n) 
+int binExp(int base, int power)
 {
 	int ans = 1;
-	while (n) 
+	while (power) 
 	{
-		if (n & 1) ans *= a;
-		a *= a;
-		n = n >> 1;
+		if (power & 1) ans *= base;
+		base *= base;
+		power = power >> 1;
 	}
 	return ans;
 }
 
 int main(void)
 {
-	int a, n;
-	scanf("%d %d", &a, &n);
-	printf("%d\n", f(a,n));
+	int base = 0, power = 0;
+	scanf("%d %d", &base, &power);
+	printf("%d\n", binExp(base, power));
 	return 0;
 }
