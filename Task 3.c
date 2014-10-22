@@ -3,17 +3,17 @@
 
 #include <stdio.h>
 
-int fitsBits(int x, int n) 
+int fitsBits(int number, int word) 
 {
-	int a = 33 + ~n;
-	int b = !(((x << a) >> a) ^ x);
-	return b;
+	int temp = 33 + ~word; //temp = 32 - word
+	int ans = !(((word << temp) >> temp) ^ word);
+	return ans;
 }
 
 int main(void)
 {
-	int x, n;
-	scanf("%d %d", &x, &n);
-	printf("%d", fitsBits(x,n));
+	int number = 0, word = 0;
+	scanf("%d %d", &number, &word);
+	printf("%d", fitsBits(number, word));
 	return 0;
 }
