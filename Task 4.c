@@ -5,7 +5,8 @@
 
 int sign(int number)
 {
-	return (number >> 31) + !(number >> 31) + ~(!number + ~0);
+	const int sh = sizeof(int) * 8 - 1;
+	return (number >> sh) + !(number >> sh) + ~(!number + ~0);
 }
 
 int main(void)
