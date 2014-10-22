@@ -3,15 +3,15 @@
 
 #include <stdio.h>
 
-int f(int n)
+int sign(int number)
 {
-	return (n >> 31) + !(n >> 31) + ~(!n + ~0);
+	return (number >> 31) + !(number >> 31) + ~(!number + ~0);
 }
 
 int main(void)
 {
-	int n;
-	scanf("%d", &n);
-	printf ("%d\n", f(n));
-	return(0);
+	int number = 0;
+	scanf("%d", &number);
+	printf ("%d\n", sign(number));
+	return 0;
 }
