@@ -7,7 +7,7 @@ int fitsBits(int number, int word)
 {
 	const int bitsInInt = sizeof(int) * 8;
 	int temp = bitsInInt + 1 + ~word; //temp = bitsInInt - word
-	int ans = !(((word << temp) >> temp) ^ word);
+	int ans = !(((number << temp) >> temp) ^ number);
 	return ans;
 }
 
