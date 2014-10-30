@@ -1,4 +1,4 @@
-Home_task_1
-===========
+SPbSU_Homeworks
+===============
 
-Home task on binary operations
+A repo for my university homeworks
