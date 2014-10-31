@@ -1,4 +1,4 @@
-Home_task_1
+Homework_1
 ===========
 
-Home task on binary operations
+Homework on binary operations
