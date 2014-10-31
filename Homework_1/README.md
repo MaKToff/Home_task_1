@@ -1,4 +1,5 @@
 Homework_1
 ===========
 
-Homework on binary operations
+The first homework.
+Work with binary operations
