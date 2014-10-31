@@ -1,4 +1,4 @@
-Home_task_2
+Homework_2
 ===========
 
-The second home task
+The second homework
