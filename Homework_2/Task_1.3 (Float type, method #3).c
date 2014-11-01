@@ -25,17 +25,6 @@ void print(floatNumber)
 	else printf("%d * 2^%d * %f\n", f.sign, f.exponent - 127, 1+((float)f.mantissa)/(1 << 23));
 }
 
-void compute(int bits)
-{
-	int sign = (bits >> 31) & 1;
-	int exponent = (bits >> 23) & ((1 << 8) - 1);
-	int mantissa = bits & ((1 << 23) - 1);
-	f.sign = sign;
-	f.exponent = exponent;
-	f.mantissa = mantissa;
-	print(f);
-}
-
 void method3()
 {
 	union
