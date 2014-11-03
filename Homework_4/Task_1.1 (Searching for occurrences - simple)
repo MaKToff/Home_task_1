@@ -21,7 +21,7 @@ int main()
 				break;
 			}
 		}
-	if (ok) printf("%d ", i);
+		if (ok) printf("%d ", i);
 	}
 	return 0;
 }
