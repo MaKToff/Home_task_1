@@ -14,7 +14,7 @@ void login()
 	printf("You are logged in. Access granted!\n");
 }
 
-int verify(char password[])
+int isVerified(char password[])
 {
 	int ok = 0;
 	char buffer[10];
@@ -27,7 +27,7 @@ int main(void)
 {
 	char str[100];
 	scanf("%s", &str);
-	if (verify(str)) login();
+	if (isVerified(str)) login();
 	else printf("Incorrect password!");
 	return 0;
 }
