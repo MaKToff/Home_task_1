@@ -1,5 +1,10 @@
-//Takes as input a float number and divides it on sign, exponent and mantissa using union. 
-//Then writes this number in other representation
+/*
+Получает на вход вещественное число и разделяет его на знак, мантиссу и экспоненту, используя union. 
+Затем выводит это число в другом представлении.
+====================================================================================================
+Takes as input a float number and divides it on sign, exponent and mantissa using union. 
+Then writes this number in other representation
+*/
 
 
 #include <stdio.h>
