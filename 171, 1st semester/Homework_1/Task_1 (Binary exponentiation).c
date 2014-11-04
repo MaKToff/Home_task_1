@@ -1,5 +1,8 @@
-//Binary exponentiation
-
+/*
+Возведение в степень с помощью битовых операций
+===============================================
+Binary exponentiation
+*/
 
 #include <stdio.h>
 
