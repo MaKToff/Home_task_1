@@ -1,5 +1,9 @@
-//Returns "1" if the number is fits in a given machine word. Else returns "0"
-
+/*
+Проверяет, поместится ли число в данное машинное слово. 
+Возвращает "1", если поместится, и "0" в противном случае.
+===========================================================================
+Returns "1" if the number is fits in a given machine word. Else returns "0"
+*/
 
 #include <stdio.h>
 
