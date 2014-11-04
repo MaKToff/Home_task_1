@@ -1,5 +1,8 @@
-//Simple solution of problem
-
+/*
+Простое решение задачи
+=============================
+Simple solution of problem
+*/
 
 #include <stdio.h>
 #include <string.h>
