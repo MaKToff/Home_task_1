@@ -1,5 +1,8 @@
-//Output the binary representation of number
-
+/*
+Вывод двоичного представления числа
+==========================================
+Output the binary representation of number
+*/
 
 #include <stdio.h>
 
@@ -15,4 +18,3 @@ int main(void)
 	}
 	return 0;
 }
-
