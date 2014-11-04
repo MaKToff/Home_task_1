@@ -1,4 +1,9 @@
-SPbSU_Homeworks
+171, 1st semester
 ===============
 
-A repo for my university homeworks
+
+Домашние задания. 171-я группа, 1-й семестр
+
+###########################################
+
+Homeworks. 171, 1st semester.
