@@ -1,7 +1,9 @@
 /*
 Алгоритм КМП для поиска вхождений подстроки в строку.
 ===================================================================
-KMP algorithm to search for occurrences of a substring in a string
+KMP algorithm to search for occurrences of a substring in a string.
+
+Author: Mikhail Kita, group 171
 */
 
 #include <stdio.h>
@@ -10,15 +12,19 @@ KMP algorithm to search for occurrences of a substring in a string
 int main()
 {
 	char temp[1000], str[2000], subStr[1000];
+	int m = 0, n = 0, prefix[2000], i = 0, current = 0;
+	
 	str[0]='%';
 	str[1]='\0';
 	scanf("%s", &temp);
 	scanf("%s", &subStr);
-	int m = strlen(subStr);
-	strcat(str, subStr);
+	
+	m = strlen(subStr);
+	strcat(str, subStr); 
 	strcat(str, "&");
 	strcat(str, temp);
-	int n = strlen(str), prefix[2000], i = 0, current = 0;
+	
+	n = strlen(str), 
 	prefix[1] = 0;
 	for (i = 2; i < n; ++i)
 	{
