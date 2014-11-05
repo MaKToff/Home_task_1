@@ -4,6 +4,8 @@
 ========================================================================================================
 Takes as input a float number and divides it on sign, exponent and mantissa using pointers. 
 Then writes this number in other representation
+
+Author: Mikhail Kita, group 171
 */
 
 #include <stdio.h>
@@ -17,7 +19,7 @@ struct floatNumber
 
 void print(floatNumber)
 {
-	#define maxNum 255 //It's maximum number for exponent = 2^8 - 1 
+	const int maxNum = 255; //It's maximum number for exponent = 2^8 - 1 
 	if (f.sign) f.sign = -1; else f.sign = 1;
 	if (f.exponent == 0 && f.mantissa == 0) printf("Zero\n");
 	else if (f.exponent == maxNum && f.mantissa == 0) 
