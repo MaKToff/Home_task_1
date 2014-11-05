@@ -1,9 +1,11 @@
 /* 
 Простая иллюстрация уязвимости переполнения буфера. Если длина входной строки составит
-от 21 до 31 символа, то возможно будет выполнить вход, несмотря на неверный пароль
+от 21 до 31 символа, то возможно будет выполнить вход, несмотря на неверный пароль.
 ======================================================================================
 This simple program has a buffer overflow vulnerability. If input string will
-have length from 21 to 31, you'll be logged in despite the incorrect password
+have length from 21 to 31, you'll be logged in despite the incorrect password.
+
+Author: Mikhail Kita, group 171
 */
 
 #include <stdio.h>
