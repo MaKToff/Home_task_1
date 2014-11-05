@@ -1,7 +1,9 @@
 /*
-Простое решение задачи
-=============================
-Simple solution of problem
+Простое решение задачи.
+===========================
+Simple solution of problem.
+
+Author: Mikhail Kita, group 171
 */
 
 #include <stdio.h>
@@ -10,9 +12,9 @@ Simple solution of problem
 int main()
 {
 	char temp[1000], str[2000], subStr[1000];
+	int n = strlen(str), m = strlen(subStr), i = 0, j = 0, ok = 0;
 	scanf("%s", &str);
 	scanf("%s", &subStr);
-	int n = strlen(str), m = strlen(subStr), i = 0, j = 0, ok = 0;
 	for (i = 0; i <= n - m; ++i)
 	{
 		ok = 1;
