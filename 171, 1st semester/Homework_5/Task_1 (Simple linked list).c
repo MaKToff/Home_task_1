@@ -148,27 +148,29 @@ void push_back(int data)
 	tail = temp;
 }
 
-void start(char str[32])
+void start(char str[22])
 {
-	int n = strlen(str), i = 0, argument = 0, ok = 0, counter = 0, value = 0;
-	char temp[32];
+	int n = strlen(str), i = 0, argument = 0, ok = 0, counter = 0, value = 0, negative = 0;
+	char temp[22];
 	for (i = 0; i < n; ++i)
 	{
-		if (ok && str[i] != ')')
+		if (ok)
 		{
-			if ((int)str[i] < (int)('0') || (int)str[i] > (int)('9'))
+			if (((int)str[i] < (int)('0') || (int)str[i] > (int)('9')) && (int)str[i] != (int)('-'))
 			{
 				error(3); //Incorrect argument
 				return;
 			}
-			argument = argument * 10 + ((int)str[i] - (int)('0'));
+			if ((int)str[i] == (int)('-')) negative = 1;
+				else argument = argument * 10 + ((int)str[i] - (int)('0'));
 			counter++;
 		}
-		if (str[i] != '(') temp[i] = str[i];
+		if (str[i] != ' ') temp[i] = str[i];
 		else {ok = 1; temp[i] = '\0';}
 	}
-	if (!ok) temp[n] = '\0';
-	if (!ok && (!strcmp(temp, "push_front") || !strcmp(temp, "push_back") || !strcmp(temp, "del_first")))
+	temp[n - counter] = '\0';
+	if (negative) argument *= -1;
+	if (!counter && (!strcmp(temp, "push_front") || !strcmp(temp, "push_back") || !strcmp(temp, "del_first")))
 	{
 		error(3); //Incorrect argument
 		return;
@@ -197,24 +199,24 @@ void start(char str[32])
 void api()
 {
 	printf("COMMANDS:\n\n");
-	printf("exit  _________________  Close application\n");
-	printf("del_first(int arg)  ___  Delete first element with value = arg\n");
-	printf("pop_back  _____________  Return last element and delete it from list\n");
-	printf("pop_front  ____________  Return first element and delete it from list\n");
-	printf("print  ________________  Print all elements of list\n");
-	printf("push_back(int arg)  ___  Create new element with value = arg at the end of list\n");
-	printf("push_front(int arg)  __  Create new element with value = arg at the top of list\n");
-	printf("size  _________________  Return size of list\n\n\n");
+	printf("exit __________________  Close application\n");
+	printf("del_first <int arg> ___  Delete first element with value = arg\n");
+	printf("pop_back ______________  Return last element and delete it from list\n");
+	printf("pop_front _____________  Return first element and delete it from list\n");
+	printf("print _________________  Print all elements of list\n");
+	printf("push_back <int arg> ___  Create new element with value = arg at the end of list\n");
+	printf("push_front <int arg> __  Create new element with value = arg at the top of list\n");
+	printf("size __________________  Return size of list\n\n\n");
 }
 
 int main(void)
 {
-	char str[32];
+	char str[22];
 	api();
 	while (1)
 	{
-		scanf("%s", str);
-		if (strlen(str) > 32) error(1); //Unknown command
+		gets(str);
+		if (strlen(str) > 22) error(1); //Unknown command
 		else start(str);
 	}
 	return 0;
