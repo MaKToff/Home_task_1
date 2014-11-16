@@ -160,7 +160,7 @@ void start()
 			sum(number1, number2, &result);
 			signRes = signNum1;
 		}
-		else signRes = subtract(number1, number2, &result);
+		else signRes = signNum1 * subtract(number1, number2, &result);
 	}
 	else 
 	{
@@ -169,7 +169,7 @@ void start()
 			sum(number1, number2, &result);
 			signRes = signNum1;
 		}
-		else signRes = subtract(number1, number2, &result);
+		else signRes = signNum1 * subtract(number1, number2, &result);
 	}
 	printf("=\n");
 	if (signRes == -1) printf("-");
