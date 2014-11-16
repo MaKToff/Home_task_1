@@ -19,12 +19,29 @@ typedef struct node
 node *head = NULL;
 node *tail = NULL;
 
+#define UNKNOWN_COMMAND 1
+#define LIST_IS_EMPTY 2
+#define INCORRECT_ARGUMENT 3
+#define NOT_ENOUGHT_MEMORY 4
+
 void error(int value)
 {
 	if (value == 1) printf("== Unknown command.\n");
 	else if (value == 2) printf("== Incorrect operation: list is empty.\n");
 	else if (value == 3) printf("== Incorrect argument.\n");
 	else if (value == 4) printf("== Not enought memory.\n");
+	return;
+}
+
+void del_all()
+{
+	node *temp = head;
+	while (temp != NULL)
+	{
+		head = head->next;
+		free(temp);
+		temp = head;
+	}
 	return;
 }
 
@@ -47,6 +64,7 @@ void del_first(int data)
 		if (ok) break;
 	}
 	free(temp);
+	return;
 }
 
 int size()
@@ -67,8 +85,8 @@ int pop_front()
 	int value = 0;
 	if (head == NULL) 
 	{
-		error(2); //List is empty
-		return 0xefffffff;
+		error(LIST_IS_EMPTY);
+		return 0;
 	}
 	value = temp->value;
 	head = head->next;
@@ -82,8 +100,8 @@ int pop_back()
 	int value = 0, i = size();
 	if (head == NULL) 
 	{
-		error(2); //List is empty
-		return 0xefffffff;
+		error(LIST_IS_EMPTY);
+		return 0;
 	}
 	if (i == 1) return pop_front();
 	value = tail->value;
@@ -103,7 +121,7 @@ void print()
 	node *temp = head;
 	if (temp == NULL) 
 	{
-		error(2); //List is empty
+		error(LIST_IS_EMPTY);
 		return;
 	}
 	printf("== ");
@@ -113,6 +131,7 @@ void print()
 		temp = temp->next;
 	}
 	printf("\n");
+	return;
 }
 
 void push_front(int data)
@@ -120,13 +139,14 @@ void push_front(int data)
 	node *temp = (node*) malloc(sizeof(node));
 	if (!temp) 
 	{
-		error(4); //Not enought memory 
+		error(NOT_ENOUGHT_MEMORY);
 		return;
 	}
 	temp->value = data;
 	temp->next = head; 
 	if (head == NULL) tail = temp;
 	head = temp;
+	return;
 }
 
 void push_back(int data)
@@ -134,7 +154,7 @@ void push_back(int data)
 	node *temp = (node*) malloc(sizeof(node));
 	if (!temp) 
 	{
-		error(4); //Not enought memory 
+		error(NOT_ENOUGHT_MEMORY);
 		return;
 	}
 	if (head == NULL) 
@@ -146,67 +166,74 @@ void push_back(int data)
 	temp->next = NULL;
 	tail->next = temp;
 	tail = temp;
+	return;
 }
 
 void start(char str[22])
 {
-	int n = strlen(str), i = 0, argument = 0, ok = 0, counter = 0, value = 0, negative = 0;
-	char temp[22];
+	int n = strlen(str), i = 0, argument = 0, ok = 0, counter = 0, value = 0, sign = 1;
+	char command[22];
 	for (i = 0; i < n; ++i)
 	{
 		if (ok)
 		{
-			if (((int)str[i] < (int)('0') || (int)str[i] > (int)('9')) && (int)str[i] != (int)('-'))
+			if (counter == 1 && (int)str[i] == '-') sign = -1;
+			else if ((int)str[i] < (int)('0') || (int)str[i] > (int)('9'))
 			{
-				error(3); //Incorrect argument
+				error(INCORRECT_ARGUMENT);
 				return;
 			}
-			if ((int)str[i] == (int)('-')) negative = 1;
-				else argument = argument * 10 + ((int)str[i] - (int)('0'));
+			else argument = argument * 10 + ((int)str[i] - (int)('0'));
 			counter++;
 		}
-		if (str[i] != ' ') temp[i] = str[i];
-		else {ok = 1; temp[i] = '\0';}
+		if (str[i] != ' ') command[i] = str[i];
+		else {ok = 1; counter++;}
 	}
-	temp[n - counter] = '\0';
-	if (negative) argument *= -1;
-	if (!counter && (!strcmp(temp, "push_front") || !strcmp(temp, "push_back") || !strcmp(temp, "del_first")))
+	command[n - counter] = '\0';
+	if ((!strcmp(command, "push_front") || !strcmp(command, "push_back") || !strcmp(command, "del_first")) 
+		&& (!counter || argument > 2147483648))
 	{
-		error(3); //Incorrect argument
+		error(INCORRECT_ARGUMENT);
 		return;
 	}
+	argument *= sign;
+	if (strcmp(command, "exit") == 0)
+	{
+		del_all();
+		exit(0);
+	}
+	else if (strcmp(command, "del_all") == 0) del_all();
 
-	if (strcmp(temp, "exit") == 0) exit(0);
-	else if (strcmp(temp, "del_first") == 0) del_first(argument);
-	else if (strcmp(temp, "push_front") == 0) push_front(argument);
-	else if (strcmp(temp, "push_back") == 0) push_back(argument);
-	else if (strcmp(temp, "print") == 0) print();
-	else if (strcmp(temp, "pop_front") == 0)
-	{
-		value = pop_front();
-		if (value != 0xefffffff) printf("== %d\n", value);
-	}
-	else if (strcmp(temp, "pop_back") == 0)
-	{
-		value = pop_back();
-		if (value != 0xefffffff) printf("== %d\n", value);
-	}
-	else if (strcmp(temp, "size") == 0) printf("== %d\n", size());
-	else error(1); //Unknown command
+	else if (strcmp(command, "del_first") == 0) del_first(argument);
+
+	else if (strcmp(command, "push_front") == 0) push_front(argument);
+
+	else if (strcmp(command, "push_back") == 0) push_back(argument);
+
+	else if (strcmp(command, "print") == 0) print();
+
+	else if (strcmp(command, "pop_front") == 0) printf("== %d\n", pop_front());
+
+	else if (strcmp(command, "pop_back") == 0) printf("== %d\n",  pop_back());
+
+	else if (strcmp(command, "size") == 0) printf("== %d\n", size());
+
+	else error(UNKNOWN_COMMAND);
 	return;
 }
 
 void api()
 {
 	printf("COMMANDS:\n\n");
-	printf("exit __________________  Close application\n");
-	printf("del_first <int arg> ___  Delete first element with value = arg\n");
-	printf("pop_back ______________  Return last element and delete it from list\n");
-	printf("pop_front _____________  Return first element and delete it from list\n");
-	printf("print _________________  Print all elements of list\n");
-	printf("push_back <int arg> ___  Create new element with value = arg at the end of list\n");
-	printf("push_front <int arg> __  Create new element with value = arg at the top of list\n");
-	printf("size __________________  Return size of list\n\n\n");
+	printf("exit  ================  Close application\n\n");
+	printf("del_all  =============  Delete all elements from list\n\n");
+	printf("del_first (int)arg  ==  Delete first element with value = arg\n\n");
+	printf("pop_back  ============  Return last element and delete it from list\n\n");
+	printf("pop_front  ===========  Return first element and delete it from list\n\n");
+	printf("print  ===============  Print all elements of list\n\n");
+	printf("push_back (int)arg  ==  Create new element with value = arg at the end of list\n\n");
+	printf("push_front (int)arg  =  Create new element with value = arg at the top of list\n\n");
+	printf("size  ================  Return size of list\n\n\n");
 }
 
 int main(void)
@@ -216,7 +243,7 @@ int main(void)
 	while (1)
 	{
 		gets(str);
-		if (strlen(str) > 22) error(1); //Unknown command
+		if (strlen(str) > 22) error(UNKNOWN_COMMAND);
 		else start(str);
 	}
 	return 0;
