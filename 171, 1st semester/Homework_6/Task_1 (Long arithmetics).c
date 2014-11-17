@@ -17,7 +17,7 @@ int read(node **head)
 	scanf("%c", &digit);
 	if (digit == '-') sign = -1;
 	else if (digit == '#') exit(0); 
-	else if ((int)digit < (int)('0') || (int)digit > (int)('9')) 
+	else if (digit < '0' || digit > '9') 
 	{
 		error(INCORRECT_ARGUMENT);
 		while((int)digit != 10) scanf("%c", &digit);
@@ -29,7 +29,7 @@ int read(node **head)
 		scanf("%c", &digit);
 		if (digit < ('0') || digit > ('9'))
 		{
-			if ((int)digit == 10) break;
+			if ((int)digit == 10 || digit == ' ') break;
 			else 
 			{
 				error(INCORRECT_ARGUMENT);
@@ -42,11 +42,25 @@ int read(node **head)
 	return sign;
 }
 
-void sum(node *head1, node *head2, node **headRes)
+void del_leading_zeroes(node **head)
+{
+	while((*head)->value == 0) 
+	{
+		del_first(head, 0);
+		if (*head == NULL) 
+		{
+			push_front(head, 0);
+			break;
+		}
+	}
+	return;
+}
+
+int sum(node *head1, node *head2, node **headRes)
 {
 	node *temp1 = head1;
 	node *temp2 = head2;
-	int current = 0;
+	int current = 0, sign = 1;
 	while(temp1 != NULL || temp2 != NULL)
 	{
 		if (temp1 != NULL) 
@@ -63,7 +77,9 @@ void sum(node *head1, node *head2, node **headRes)
 		current /= 10;
 	}
 	if (current) push_front(headRes, current);
-	return;
+	del_leading_zeroes(headRes);
+	if (((*headRes)->value == 0) && size(headRes) == 1) sign = 0; 
+	return sign;
 }
 
 int subtract(node *head1, node *head2, node **headRes)
@@ -72,7 +88,9 @@ int subtract(node *head1, node *head2, node **headRes)
 	node *temp2 = head2;
 	node *tempResHead = NULL;
 	node *tempResTail = NULL;
-	int current = 0, less = 0, sign = 1, first = 1;
+	int current = 0, less = 0, sign = 1, first = 1, zero = 0;
+	
+	if (temp1->value == 0 && size(&temp1) == 1) zero = 1;
 	while(temp1 != NULL || temp2 != NULL)
 	{
 		if (temp1 == NULL && current) less = 1;
@@ -98,7 +116,7 @@ int subtract(node *head1, node *head2, node **headRes)
 		}
 	}
 	if (current) less = 1;
-	if (less)
+	if (less & !zero)
 	{
 		while(tempResHead != NULL)
 		{
@@ -112,7 +130,7 @@ int subtract(node *head1, node *head2, node **headRes)
 		}
 		sign = -1;
 	}
-	else 
+	else if (!zero) 
 	{
 		while(tempResHead != NULL)
 		{
@@ -120,15 +138,18 @@ int subtract(node *head1, node *head2, node **headRes)
 			tempResHead = tempResHead->next;
 		}
 	}
-	while((*headRes)->value == 0) 
+	else //Если вычитаемое - ноль
 	{
-		del_first(headRes, 0);
-		if (*headRes == NULL) 
+		temp2 = head2;
+		while(temp2 != NULL)
 		{
-			push_front(headRes, 0);
-			break;
+			push_front(headRes, temp2->value);
+			temp2 = temp2->next;
 		}
+		sign = -1;
 	}
+	del_leading_zeroes(headRes);
+	if (((*headRes)->value == 0) && size(headRes) == 1) sign = 0; 
 	return sign;
 }
 
@@ -137,14 +158,15 @@ void start()
 	node* number1 = NULL;
 	node* number2 = NULL;
 	node* result = NULL;
-	char digit, operation;
+	char space, operation;
 	int signNum1 = 1, signNum2 = 1, signRes = 1, i = 0;
 	
-	printf("\n\n\n### Enter the expression\n\n\n");
+	printf("\n\n\n_____________________\n");
+	printf("Enter the expression:\n\n");
 	signNum1 = read(&number1);
 	if (!signNum1) return;
 	scanf("%c", &operation);
-	scanf("%c", &digit);
+	scanf("%c", &space);
 	if (operation != '+' && operation != '-') 
 	{
 		error(UNKNOWN_COMMAND);
@@ -156,22 +178,18 @@ void start()
 	if (signNum1 == signNum2)
 	{
 		if (operation == '+') 
-		{
-			sum(number1, number2, &result);
-			signRes = signNum1;
-		}
-		else signRes = signNum1 * subtract(number1, number2, &result);
+			signRes = signNum1 * sum(number1, number2, &result);
+		else 
+			signRes = signNum1 * subtract(number1, number2, &result);
 	}
 	else 
 	{
 		if (operation == '-') 
-		{
-			sum(number1, number2, &result);
-			signRes = signNum1;
-		}
-		else signRes = signNum1 * subtract(number1, number2, &result);
+			signRes = signNum1 * sum(number1, number2, &result);
+		else 
+			signRes = signNum1 * subtract(number1, number2, &result);
 	}
-	printf("=\n");
+	printf("===\n");
 	if (signRes == -1) printf("-");
 	print(&result);
 	
@@ -183,7 +201,7 @@ void start()
 int main(void)
 {
 	printf("CALCULATOR\n\n");
-	printf("Enter '#' for quit\n\n");
+	printf("Enter '#' for quit");
 	while(1)
 	{
 		start();
