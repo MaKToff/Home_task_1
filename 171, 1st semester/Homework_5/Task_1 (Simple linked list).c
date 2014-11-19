@@ -21,15 +21,31 @@ typedef struct node
 	struct node *next;
 } node;
 
+//prints message about error
 void error(int value)
 {
-	if (value == 1) printf("== Unknown command.\n");
-	else if (value == 2) printf("== Incorrect operation: list is empty.\n");
-	else if (value == 3) printf("== Incorrect argument.\n");
-	else if (value == 4) printf("== Not enought memory.\n");
+	switch(value)
+	{
+		case UNKNOWN_COMMAND:
+			printf("== Unknown command.\n\n");
+			break;
+
+		case LIST_IS_EMPTY:
+			printf("== Incorrect operation: list is empty.\n\n");
+			break;
+
+		case INCORRECT_ARGUMENT:
+			printf("== Incorrect argument.\n\n");
+			break;
+
+		case NOT_ENOUGHT_MEMORY:
+			printf("== Not enought memory.\n\n");
+			break;
+	}
 	return;
 }
 
+//deletes all elements from list
 void del_all(node **head)
 {
 	node *temp = *head;
@@ -42,6 +58,7 @@ void del_all(node **head)
 	return;
 }
 
+//deletes first element with given value
 void del_first(int data, node **head)
 {
 	node *temp = *head;
@@ -64,6 +81,7 @@ void del_first(int data, node **head)
 	return;
 }
 
+//returns size of list
 int size(node **head)
 {
 	node *temp = *head;
@@ -76,6 +94,7 @@ int size(node **head)
 	return current;
 }
 
+//returns first element and deletes it from list
 int pop_front(node **head)
 {
 	node *temp = *head;
@@ -91,6 +110,7 @@ int pop_front(node **head)
 	return value;
 }
 
+//returns last element and deletes it from list
 int pop_back(node **head, node **tail)
 {
 	node *temp = *head;
@@ -113,6 +133,7 @@ int pop_back(node **head, node **tail)
 	return value;
 }
 
+//prints all elements of list
 void print(node **head)
 {
 	node *temp = *head;
@@ -127,10 +148,11 @@ void print(node **head)
 		printf("%d ", temp->value);
 		temp = temp->next;
 	}
-	printf("\n");
+	printf("\n\n");
 	return;
 }
 
+//adds new element at the head of list
 void push_front(int data, node **head, node **tail)
 {
 	node *temp = (node*) malloc(sizeof(node));
@@ -146,6 +168,7 @@ void push_front(int data, node **head, node **tail)
 	return;
 }
 
+//adds new element at the end of list
 void push_back(int data, node **head, node **tail)
 {
 	node *temp = (node*) malloc(sizeof(node));
@@ -166,6 +189,7 @@ void push_back(int data, node **head, node **tail)
 	return;
 }
 
+//converts the source string and calls the appropriate command
 void start(char str[22], node **head, node **tail)
 {
 	int n = strlen(str), i = 0, argument = 0, ok = 0, counter = 0, value = 0, sign = 1;
@@ -194,43 +218,53 @@ void start(char str[22], node **head, node **tail)
 		return;
 	}
 	argument *= sign;
+
 	if (strcmp(command, "exit") == 0)
 	{
 		del_all(head);
 		exit(0);
 	}
-	else if (strcmp(command, "del_all") == 0) del_all(head);
+	else if (strcmp(command, "del_all") == 0) 
+		del_all(head);
 
-	else if (strcmp(command, "del_first") == 0) del_first(argument, head);
+	else if (strcmp(command, "del_first") == 0) 
+		del_first(argument, head);
 
-	else if (strcmp(command, "push_front") == 0) push_front(argument, head, tail);
+	else if (strcmp(command, "push_front") == 0) 
+		push_front(argument, head, tail);
 
-	else if (strcmp(command, "push_back") == 0) push_back(argument, head, tail);
+	else if (strcmp(command, "push_back") == 0) 
+		push_back(argument, head, tail);
 
-	else if (strcmp(command, "print") == 0) print(head);
+	else if (strcmp(command, "print") == 0) 
+		print(head);
 
-	else if (strcmp(command, "pop_front") == 0) printf("== %d\n", pop_front(head));
+	else if (strcmp(command, "pop_front") == 0) 
+		printf("== %d\n\n", pop_front(head));
 
-	else if (strcmp(command, "pop_back") == 0) printf("== %d\n",  pop_back(head, tail));
+	else if (strcmp(command, "pop_back") == 0) 
+		printf("== %d\n\n",  pop_back(head, tail));
 
-	else if (strcmp(command, "size") == 0) printf("== %d\n", size(head));
+	else if (strcmp(command, "size") == 0) 
+		printf("== %d\n\n", size(head));
 
 	else error(UNKNOWN_COMMAND);
 	return;
 }
 
-void api()
+//prints all commands
+void help()
 {
 	printf("COMMANDS:\n\n");
-	printf("exit  ================  Close application\n\n");
-	printf("del_all  =============  Delete all elements from list\n\n");
-	printf("del_first (int)arg  ==  Delete first element with value = arg\n\n");
-	printf("pop_back  ============  Return last element and delete it from list\n\n");
-	printf("pop_front  ===========  Return first element and delete it from list\n\n");
-	printf("print  ===============  Print all elements of list\n\n");
-	printf("push_back (int)arg  ==  Create new element with value = arg at the end of list\n\n");
-	printf("push_front (int)arg  =  Create new element with value = arg at the top of list\n\n");
-	printf("size  ================  Return size of list\n\n\n");
+	printf("exit  ================  Close application\n");
+	printf("del_all  =============  Delete all elements from list\n");
+	printf("del_first (int)arg  ==  Delete first element with value = arg\n");
+	printf("pop_back  ============  Return last element and delete it from list\n");
+	printf("pop_front  ===========  Return first element and delete it from list\n");
+	printf("print  ===============  Print all elements of list\n");
+	printf("push_back (int)arg  ==  Create new element with value = arg at the end of list\n");
+	printf("push_front (int)arg  =  Create new element with value = arg at the head of list\n");
+	printf("size  ================  Return size of list\n\n");
 }
 
 int main(void)
@@ -238,7 +272,7 @@ int main(void)
 	node *head = NULL;
 	node *tail = NULL;
 	char str[22];
-	api();
+	help();
 	while (1)
 	{
 		gets(str);
