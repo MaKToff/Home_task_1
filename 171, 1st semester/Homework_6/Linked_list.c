@@ -9,27 +9,33 @@ Author: Mikhail Kita, group 171
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "Linked_list.h"
 
-#define UNKNOWN_COMMAND 1
-#define LIST_IS_EMPTY 2
-#define INCORRECT_ARGUMENT 3
-#define NOT_ENOUGHT_MEMORY 4
-
-typedef struct node
-{
-	int value;
-	struct node *next;
-} node;
-
+//prints message about error
 void error(int value)
 {
-	if (value == 1) printf("== Unknown command.\n");
-	else if (value == 2) printf("== Incorrect operation: list is empty.\n");
-	else if (value == 3) printf("== Incorrect argument.\n");
-	else if (value == 4) printf("== Not enought memory.\n");
+	switch(value)
+	{
+		case UNKNOWN_COMMAND:
+			printf("== Unknown command.\n");
+			break;
+
+		case LIST_IS_EMPTY:
+			printf("== Incorrect operation: list is empty.\n");
+			break;
+
+		case INCORRECT_ARGUMENT:
+			printf("== Incorrect argument.\n");
+			break;
+
+		case NOT_ENOUGHT_MEMORY:
+			printf("== Not enought memory.\n");
+			break;
+	}
 	return;
 }
 
+//deletes all elements from list
 void del_all(node **head)
 {
 	node *temp = *head;
@@ -42,6 +48,7 @@ void del_all(node **head)
 	return;
 }
 
+//deletes first element with given value
 void del_first(node **head, int data)
 {
 	node *temp = *head;
@@ -64,6 +71,7 @@ void del_first(node **head, int data)
 	return;
 }
 
+//returns size of list
 int size(node **head)
 {
 	node *temp = *head;
@@ -76,6 +84,7 @@ int size(node **head)
 	return current;
 }
 
+//prints all elements of list
 void print(node **head)
 {
 	node *temp = *head;
@@ -92,6 +101,7 @@ void print(node **head)
 	return;
 }
 
+//adds new element at the head of list
 void push_front(node **head, int data)
 {
 	node *temp = (node*) malloc(sizeof(node));
@@ -106,6 +116,7 @@ void push_front(node **head, int data)
 	return;
 }
 
+//adds new element at the end of list
 void push_back(node **head, node **tail, int data)
 {
 	node *temp = (node*) malloc(sizeof(node));
