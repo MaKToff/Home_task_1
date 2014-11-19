@@ -10,19 +10,16 @@ Author: Mikhail Kita, group 171
 #include <stdlib.h>
 #include <string.h>
 
+#define UNKNOWN_COMMAND 1
+#define LIST_IS_EMPTY 2
+#define INCORRECT_ARGUMENT 3
+#define NOT_ENOUGHT_MEMORY 4
+
 typedef struct node
 {
 	int value;
 	struct node *next;
 } node;
-
-node *head = NULL;
-node *tail = NULL;
-
-#define UNKNOWN_COMMAND 1
-#define LIST_IS_EMPTY 2
-#define INCORRECT_ARGUMENT 3
-#define NOT_ENOUGHT_MEMORY 4
 
 void error(int value)
 {
@@ -33,28 +30,28 @@ void error(int value)
 	return;
 }
 
-void del_all()
+void del_all(node **head)
 {
-	node *temp = head;
+	node *temp = *head;
 	while (temp != NULL)
 	{
-		head = head->next;
+		*head = (*head)->next;
 		free(temp);
-		temp = head;
+		temp = *head;
 	}
 	return;
 }
 
-void del_first(int data)
+void del_first(int data, node **head)
 {
-	node *temp = head;
+	node *temp = *head;
 	node *prev = NULL;
 	int ok = 0;
 	while (temp != NULL)
 	{
 		if (temp->value == data)
 		{
-			if (temp == head) head = head->next;
+			if (temp == *head) *head = (*head)->next;
 			else prev->next = temp->next;
 			ok = 1;
 			break;
@@ -67,9 +64,9 @@ void del_first(int data)
 	return;
 }
 
-int size()
+int size(node **head)
 {
-	node *temp = head;
+	node *temp = *head;
 	int current = 0;
 	while (temp != NULL)
 	{
@@ -79,46 +76,46 @@ int size()
 	return current;
 }
 
-int pop_front()
+int pop_front(node **head)
 {
-	node *temp = head;
+	node *temp = *head;
 	int value = 0;
-	if (head == NULL) 
+	if (*head == NULL) 
 	{
 		error(LIST_IS_EMPTY);
 		return 0;
 	}
 	value = temp->value;
-	head = head->next;
+	*head = (*head)->next;
 	free(temp);
 	return value;
 }
 
-int pop_back()
+int pop_back(node **head, node **tail)
 {
-	node *temp = head;
-	int value = 0, i = size();
-	if (head == NULL) 
+	node *temp = *head;
+	int value = 0, i = size(head);
+	if (*head == NULL) 
 	{
 		error(LIST_IS_EMPTY);
 		return 0;
 	}
-	if (i == 1) return pop_front();
-	value = tail->value;
+	if (i == 1) return pop_front(head);
+	value = (*tail)->value;
 	while (i > 2) 
 	{
 		temp = temp->next;
 		i--;
 	}
 	temp->next = NULL;
-	free(tail);
-	tail = temp;
+	free(*tail);
+	*tail = temp;
 	return value;
 }
 
-void print()
+void print(node **head)
 {
-	node *temp = head;
+	node *temp = *head;
 	if (temp == NULL) 
 	{
 		error(LIST_IS_EMPTY);
@@ -134,7 +131,7 @@ void print()
 	return;
 }
 
-void push_front(int data)
+void push_front(int data, node **head, node **tail)
 {
 	node *temp = (node*) malloc(sizeof(node));
 	if (!temp) 
@@ -143,13 +140,13 @@ void push_front(int data)
 		return;
 	}
 	temp->value = data;
-	temp->next = head; 
-	if (head == NULL) tail = temp;
-	head = temp;
+	temp->next = *head; 
+	if (*head == NULL) *tail = temp;
+	*head = temp;
 	return;
 }
 
-void push_back(int data)
+void push_back(int data, node **head, node **tail)
 {
 	node *temp = (node*) malloc(sizeof(node));
 	if (!temp) 
@@ -157,19 +154,19 @@ void push_back(int data)
 		error(NOT_ENOUGHT_MEMORY);
 		return;
 	}
-	if (head == NULL) 
+	if (*head == NULL) 
 	{
-		push_front(data);
+		push_front(data, head, tail);
 		return;
 	}
 	temp->value = data;
 	temp->next = NULL;
-	tail->next = temp;
-	tail = temp;
+	(*tail)->next = temp;
+	*tail = temp;
 	return;
 }
 
-void start(char str[22])
+void start(char str[22], node **head, node **tail)
 {
 	int n = strlen(str), i = 0, argument = 0, ok = 0, counter = 0, value = 0, sign = 1;
 	char command[22];
@@ -199,24 +196,24 @@ void start(char str[22])
 	argument *= sign;
 	if (strcmp(command, "exit") == 0)
 	{
-		del_all();
+		del_all(head);
 		exit(0);
 	}
-	else if (strcmp(command, "del_all") == 0) del_all();
+	else if (strcmp(command, "del_all") == 0) del_all(head);
 
-	else if (strcmp(command, "del_first") == 0) del_first(argument);
+	else if (strcmp(command, "del_first") == 0) del_first(argument, head);
 
-	else if (strcmp(command, "push_front") == 0) push_front(argument);
+	else if (strcmp(command, "push_front") == 0) push_front(argument, head, tail);
 
-	else if (strcmp(command, "push_back") == 0) push_back(argument);
+	else if (strcmp(command, "push_back") == 0) push_back(argument, head, tail);
 
-	else if (strcmp(command, "print") == 0) print();
+	else if (strcmp(command, "print") == 0) print(head);
 
-	else if (strcmp(command, "pop_front") == 0) printf("== %d\n", pop_front());
+	else if (strcmp(command, "pop_front") == 0) printf("== %d\n", pop_front(head));
 
-	else if (strcmp(command, "pop_back") == 0) printf("== %d\n",  pop_back());
+	else if (strcmp(command, "pop_back") == 0) printf("== %d\n",  pop_back(head, tail));
 
-	else if (strcmp(command, "size") == 0) printf("== %d\n", size());
+	else if (strcmp(command, "size") == 0) printf("== %d\n", size(head));
 
 	else error(UNKNOWN_COMMAND);
 	return;
@@ -238,13 +235,15 @@ void api()
 
 int main(void)
 {
+	node *head = NULL;
+	node *tail = NULL;
 	char str[22];
 	api();
 	while (1)
 	{
 		gets(str);
 		if (strlen(str) > 22) error(UNKNOWN_COMMAND);
-		else start(str);
+		else start(str, &head, &tail);
 	}
 	return 0;
 }
