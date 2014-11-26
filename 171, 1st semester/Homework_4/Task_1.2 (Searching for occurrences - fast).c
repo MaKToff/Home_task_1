@@ -1,4 +1,4 @@
-/*
+﻿/*
 Алгоритм КМП для поиска вхождений подстроки в строку.
 ===================================================================
 KMP algorithm to search for occurrences of a substring in a string.
@@ -9,24 +9,29 @@ Author: Mikhail Kita, group 171
 #include <stdio.h>
 #include <string.h>
 
-int main()
+enum 
+{ 
+	MAX_SIZE_OF_STRING = 1000 
+};
+
+int main(void)
 {
-	char temp[1000], str[2000], subStr[1000];
-	int m = 0, n = 0, prefix[2000], i = 0, current = 0;
+	char temp[MAX_SIZE_OF_STRING], str[2 * MAX_SIZE_OF_STRING], subStr[MAX_SIZE_OF_STRING];
+	int lenStr = 0, lenSubStr = 0, prefix[2000], i = 0, current = 0, counter = 0;
 	
-	str[0]='%';
+	str[0]='\1';
 	str[1]='\0';
 	scanf("%s", &temp);
 	scanf("%s", &subStr);
 	
-	m = strlen(subStr);
+	lenSubStr = strlen(subStr);
 	strcat(str, subStr); 
-	strcat(str, "&");
+	strcat(str, "\2");
 	strcat(str, temp);
-	
-	n = strlen(str), 
+
+	lenStr = strlen(str), 
 	prefix[1] = 0;
-	for (i = 2; i < n; ++i)
+	for (i = 2; i < lenStr; ++i)
 	{
 		current = prefix[i-1];
 		while (current > 0 && str[i]!=str[current + 1]) 
@@ -34,7 +39,9 @@ int main()
 		if (str[i] == str[current + 1]) current++;
 		prefix[i] = current;
 	}
-	for (i = m + 1; i < n; ++i)
-		if (prefix[i] == m) printf("%d ", i - (2 * m + 1));
+	for (i = lenSubStr + 1; i < lenStr; ++i)
+		if (prefix[i] == lenSubStr)
+			counter++;
+	printf("%d\n", counter);
 	return 0;
 }
