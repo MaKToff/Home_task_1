@@ -1,4 +1,4 @@
-/*
+﻿/*
 Первичное знакомство с односвязными списками. Реализованы только основные функции
 =================================================================================
 Simple linked list (only basic functions are realized)
@@ -10,10 +10,13 @@ Author: Mikhail Kita, group 171
 #include <stdlib.h>
 #include <string.h>
 
-#define UNKNOWN_COMMAND 1
-#define LIST_IS_EMPTY 2
-#define INCORRECT_ARGUMENT 3
-#define NOT_ENOUGHT_MEMORY 4
+enum errors
+{
+	UNKNOWN_COMMAND = 1,
+	LIST_IS_EMPTY = 2,
+	INCORRECT_ARGUMENT = 3,
+	NOT_ENOUGHT_MEMORY = 4
+};
 
 typedef struct node
 {
@@ -22,7 +25,7 @@ typedef struct node
 } node;
 
 //prints message about error
-void error(int value)
+void intList_error(int value)
 {
 	switch(value)
 	{
@@ -46,7 +49,7 @@ void error(int value)
 }
 
 //deletes all elements from list
-void del_all(node **head)
+void intList_delete_all(node **head)
 {
 	node *temp = *head;
 	while (temp != NULL)
@@ -59,7 +62,7 @@ void del_all(node **head)
 }
 
 //deletes first element with given value
-void del_first(int data, node **head)
+void intList_delete_first(int data, node **head)
 {
 	node *temp = *head;
 	node *prev = NULL;
@@ -82,7 +85,7 @@ void del_first(int data, node **head)
 }
 
 //returns size of list
-int size(node **head)
+int intList_size(node **head)
 {
 	node *temp = *head;
 	int current = 0;
@@ -95,13 +98,13 @@ int size(node **head)
 }
 
 //returns first element and deletes it from list
-int pop_front(node **head)
+int intList_pop_front(node **head)
 {
 	node *temp = *head;
 	int value = 0;
 	if (*head == NULL) 
 	{
-		error(LIST_IS_EMPTY);
+		intList_error(LIST_IS_EMPTY);
 		return 0;
 	}
 	value = temp->value;
@@ -111,16 +114,17 @@ int pop_front(node **head)
 }
 
 //returns last element and deletes it from list
-int pop_back(node **head, node **tail)
+int intList_pop_back(node **head, node **tail)
 {
 	node *temp = *head;
-	int value = 0, i = size(head);
+	int value = 0, i = intList_size(head);
 	if (*head == NULL) 
 	{
-		error(LIST_IS_EMPTY);
+		intList_error(LIST_IS_EMPTY);
 		return 0;
 	}
-	if (i == 1) return pop_front(head);
+	if (i == 1) 
+		return intList_pop_front(head);
 	value = (*tail)->value;
 	while (i > 2) 
 	{
@@ -134,12 +138,12 @@ int pop_back(node **head, node **tail)
 }
 
 //prints all elements of list
-void print(node **head)
+void intList_print(node **head)
 {
 	node *temp = *head;
 	if (temp == NULL) 
 	{
-		error(LIST_IS_EMPTY);
+		intList_error(LIST_IS_EMPTY);
 		return;
 	}
 	printf("== ");
@@ -153,33 +157,34 @@ void print(node **head)
 }
 
 //adds new element at the head of list
-void push_front(int data, node **head, node **tail)
+void intList_push_front(int data, node **head, node **tail)
 {
 	node *temp = (node*) malloc(sizeof(node));
 	if (!temp) 
 	{
-		error(NOT_ENOUGHT_MEMORY);
+		intList_error(NOT_ENOUGHT_MEMORY);
 		return;
 	}
 	temp->value = data;
 	temp->next = *head; 
-	if (*head == NULL) *tail = temp;
+	if (*head == NULL) 
+		*tail = temp;
 	*head = temp;
 	return;
 }
 
 //adds new element at the end of list
-void push_back(int data, node **head, node **tail)
+void intList_push_back(int data, node **head, node **tail)
 {
 	node *temp = (node*) malloc(sizeof(node));
 	if (!temp) 
 	{
-		error(NOT_ENOUGHT_MEMORY);
+		intList_error(NOT_ENOUGHT_MEMORY);
 		return;
 	}
 	if (*head == NULL) 
 	{
-		push_front(data, head, tail);
+		intList_push_front(data, head, tail);
 		return;
 	}
 	temp->value = data;
@@ -190,7 +195,7 @@ void push_back(int data, node **head, node **tail)
 }
 
 //converts the source string and calls the appropriate command
-void start(char str[22], node **head, node **tail)
+void intList_start(char str[22], node **head, node **tail)
 {
 	int n = strlen(str), i = 0, argument = 0, ok = 0, counter = 0, value = 0, sign = 1;
 	char command[22];
@@ -201,7 +206,7 @@ void start(char str[22], node **head, node **tail)
 			if (counter == 1 && (int)str[i] == '-') sign = -1;
 			else if ((int)str[i] < (int)('0') || (int)str[i] > (int)('9'))
 			{
-				error(INCORRECT_ARGUMENT);
+				intList_error(INCORRECT_ARGUMENT);
 				return;
 			}
 			else argument = argument * 10 + ((int)str[i] - (int)('0'));
@@ -214,41 +219,41 @@ void start(char str[22], node **head, node **tail)
 	if ((!strcmp(command, "push_front") || !strcmp(command, "push_back") || !strcmp(command, "del_first")) 
 		&& (!counter || argument > 2147483648))
 	{
-		error(INCORRECT_ARGUMENT);
+		intList_error(INCORRECT_ARGUMENT);
 		return;
 	}
 	argument *= sign;
 
 	if (strcmp(command, "exit") == 0)
 	{
-		del_all(head);
+		intList_delete_all(head);
 		exit(0);
 	}
-	else if (strcmp(command, "del_all") == 0) 
-		del_all(head);
+	else if (strcmp(command, "delete_all") == 0) 
+		intList_delete_all(head);
 
-	else if (strcmp(command, "del_first") == 0) 
-		del_first(argument, head);
+	else if (strcmp(command, "delete_first") == 0) 
+		intList_delete_first(argument, head);
 
 	else if (strcmp(command, "push_front") == 0) 
-		push_front(argument, head, tail);
+		intList_push_front(argument, head, tail);
 
 	else if (strcmp(command, "push_back") == 0) 
-		push_back(argument, head, tail);
+		intList_push_back(argument, head, tail);
 
 	else if (strcmp(command, "print") == 0) 
-		print(head);
+		intList_print(head);
 
 	else if (strcmp(command, "pop_front") == 0) 
-		printf("== %d\n\n", pop_front(head));
+		printf("== %d\n\n", intList_pop_front(head));
 
 	else if (strcmp(command, "pop_back") == 0) 
-		printf("== %d\n\n",  pop_back(head, tail));
+		printf("== %d\n\n",  intList_pop_back(head, tail));
 
 	else if (strcmp(command, "size") == 0) 
-		printf("== %d\n\n", size(head));
+		printf("== %d\n\n", intList_size(head));
 
-	else error(UNKNOWN_COMMAND);
+	else intList_error(UNKNOWN_COMMAND);
 	return;
 }
 
@@ -256,15 +261,15 @@ void start(char str[22], node **head, node **tail)
 void help()
 {
 	printf("COMMANDS:\n\n");
-	printf("exit  ================  Close application\n");
-	printf("del_all  =============  Delete all elements from list\n");
-	printf("del_first (int)arg  ==  Delete first element with value = arg\n");
-	printf("pop_back  ============  Return last element and delete it from list\n");
-	printf("pop_front  ===========  Return first element and delete it from list\n");
-	printf("print  ===============  Print all elements of list\n");
-	printf("push_back (int)arg  ==  Create new element with value = arg at the end of list\n");
-	printf("push_front (int)arg  =  Create new element with value = arg at the head of list\n");
-	printf("size  ================  Return size of list\n\n");
+	printf("exit ================== Close application\n");
+	printf("delete_all ============ Delete all elements from list\n");
+	printf("delete_first (int)arg = Delete first element with given value\n");
+	printf("pop_back ============== Return last element and delete it from list\n");
+	printf("pop_front ============= Return first element and delete it from list\n");
+	printf("print ================= Print all elements of list\n");
+	printf("push_back (int)arg ==== Create new element with given value at the end of list\n");
+	printf("push_front (int)arg === Create new element with given value at the head of list\n");
+	printf("size ================== Return size of list\n\n");
 }
 
 int main(void)
@@ -276,8 +281,8 @@ int main(void)
 	while (1)
 	{
 		gets(str);
-		if (strlen(str) > 22) error(UNKNOWN_COMMAND);
-		else start(str, &head, &tail);
+		if (strlen(str) > 22) intList_error(UNKNOWN_COMMAND);
+		else intList_start(str, &head, &tail);
 	}
 	return 0;
 }

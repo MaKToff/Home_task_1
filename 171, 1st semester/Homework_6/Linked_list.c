@@ -1,4 +1,4 @@
-/*
+﻿/*
 Реализация односвязного списка
 ===============================
 Linked list
@@ -12,7 +12,7 @@ Author: Mikhail Kita, group 171
 #include "Linked_list.h"
 
 //prints message about error
-void error(int value)
+void intList_error(int value)
 {
 	switch(value)
 	{
@@ -36,7 +36,7 @@ void error(int value)
 }
 
 //deletes all elements from list
-void del_all(node **head)
+void intList_delete_all(node **head)
 {
 	node *temp = *head;
 	while (temp != NULL)
@@ -49,7 +49,7 @@ void del_all(node **head)
 }
 
 //deletes first element with given value
-void del_first(node **head, int data)
+void intList_delete_first(node **head, int data)
 {
 	node *temp = *head;
 	node *prev = NULL;
@@ -65,14 +65,15 @@ void del_first(node **head, int data)
 		}
 		prev = temp;
 		temp = temp->next;
-		if (ok) break;
+		if (ok) 
+			break;
 	}
 	free(temp);
 	return;
 }
 
 //returns size of list
-int size(node **head)
+int intList_size(node **head)
 {
 	node *temp = *head;
 	int current = 0;
@@ -85,12 +86,12 @@ int size(node **head)
 }
 
 //prints all elements of list
-void print(node **head)
+void intList_print(node **head)
 {
 	node *temp = *head;
 	if (temp == NULL) 
 	{
-		error(LIST_IS_EMPTY);
+		intList_error(LIST_IS_EMPTY);
 		return;
 	}
 	while (temp != NULL)
@@ -102,12 +103,12 @@ void print(node **head)
 }
 
 //adds new element at the head of list
-void push_front(node **head, int data)
+void intList_push_front(node **head, int data)
 {
 	node *temp = (node*) malloc(sizeof(node));
 	if (!temp) 
 	{
-		error(NOT_ENOUGHT_MEMORY);
+		intList_error(NOT_ENOUGHT_MEMORY);
 		return;
 	}
 	temp->value = data;
@@ -117,17 +118,17 @@ void push_front(node **head, int data)
 }
 
 //adds new element at the end of list
-void push_back(node **head, node **tail, int data)
+void intList_push_back(node **head, node **tail, int data)
 {
 	node *temp = (node*) malloc(sizeof(node));
 	if (!temp) 
 	{
-		error(NOT_ENOUGHT_MEMORY);
+		intList_error(NOT_ENOUGHT_MEMORY);
 		return;
 	}
 	if (*head == NULL) 
 	{
-		push_front(head, data);
+		intList_push_front(head, data);
 		*tail = *head;
 		return;
 	}

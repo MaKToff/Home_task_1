@@ -1,4 +1,4 @@
-/*
+﻿/*
 Сложение и вычитание длинных чисел
 ========================================
 Addition and subtraction of long numbers
@@ -17,12 +17,12 @@ typedef struct number
 } number;
 
 //executes the initial declaration variable of type "number"
-number* number_init()
+number* longNum_init()
 {
 	number *temp = (number*)malloc(sizeof(number));
 	if (temp == NULL) 
 	{
-		error(NOT_ENOUGHT_MEMORY);
+		intList_error(NOT_ENOUGHT_MEMORY);
 		return NULL;
 	}
 	temp->sign = 1;
@@ -31,19 +31,19 @@ number* number_init()
 }
 
 //deletes all digits in all numbers
-void clear_all(number **num1, number **num2, number **result)
+void longNum_clear_all(number **num1, number **num2, number **result)
 {
-	del_all(&((*num1)->head));
-	del_all(&((*num2)->head));
-	del_all(&((*result)->head));
+	intList_delete_all(&((*num1)->head));
+	intList_delete_all(&((*num2)->head));
+	intList_delete_all(&((*result)->head));
 	return;
 }
 
 //reads digits of number 
-number* read(int *ok)
+number* longNum_read(int *ok)
 {
 	char digit;
-	number *num = number_init();
+	number *num = longNum_init();
 
 	scanf("%c", &digit);
 	if (digit == '-') 
@@ -55,14 +55,14 @@ number* read(int *ok)
 	}
 	else if (digit < '0' || digit > '9') 
 	{
-		error(INCORRECT_ARGUMENT);
+		intList_error(INCORRECT_ARGUMENT);
 		while((int)digit != 10) 
 			scanf("%c", &digit);
 		num->sign = 0;
 		return num;
 	}
 	else 
-		push_front(&num->head, (int)digit - (int)('0'));
+		intList_push_front(&num->head, (int)digit - (int)('0'));
 	while (1)
 	{
 		scanf("%c", &digit);
@@ -72,27 +72,27 @@ number* read(int *ok)
 				break;
 			else 
 			{
-				error(INCORRECT_ARGUMENT);
+				intList_error(INCORRECT_ARGUMENT);
 				while((int)digit != 10) 
 					scanf("%c", &digit);
 				num->sign = 0;
 				return num;
 			}
 		}
-		push_front(&num->head, (int)digit - (int)('0'));
+		intList_push_front(&num->head, (int)digit - (int)('0'));
 	}
 	return num;
 }
 
 //deletes leading zeroes in number
-void del_leading_zeroes(number **num)
+void longNum_delete_leading_zeroes(number **num)
 {
 	while(((*num)->head)->value == 0) 
 	{
-		del_first(&(*num)->head, 0);
+		intList_delete_first(&(*num)->head, 0);
 		if ((*num)->head == NULL) 
 		{
-			push_front(&(*num)->head, 0);
+			intList_push_front(&(*num)->head, 0);
 			break;
 		}
 	}
@@ -100,7 +100,7 @@ void del_leading_zeroes(number **num)
 }
 
 //executes the addition of two numbers
-void sum(number **num1, number **num2, number **result)
+void longNum_sum(number **num1, number **num2, number **result)
 {
 	node *temp1 = (*num1)->head;
 	node *temp2 = (*num2)->head;
@@ -118,19 +118,19 @@ void sum(number **num1, number **num2, number **result)
 			current += temp2->value;
 			temp2 = temp2->next;
 		}
-		push_front(&(*result)->head, current % 10);
+		intList_push_front(&(*result)->head, current % 10);
 		current /= 10;
 	}
 	if (current) 
-		push_front(&(*result)->head, current);
-	del_leading_zeroes(result);
-	if ((((*result)->head)->value == 0) && size(&(*result)->head) == 1)
+		intList_push_front(&(*result)->head, current);
+	longNum_delete_leading_zeroes(result);
+	if ((((*result)->head)->value == 0) && intList_size(&(*result)->head) == 1)
 		(*result)->sign = 0;
 	return;
 }
 
 //executes the subtraction of two numbers
-void subtract(number **num1, number **num2, number **result)
+void longNum_subtract(number **num1, number **num2, number **result)
 {
 	node *temp1 = (*num1)->head;
 	node *temp2 = (*num2)->head;
@@ -139,7 +139,7 @@ void subtract(number **num1, number **num2, number **result)
 	int current = 0, less = 0, first = 1, zero = 0;
 	
 	(*result)->sign = 1;
-	if (temp1->value == 0 && size(&temp1) == 1) zero = 1;
+	if (temp1->value == 0 && intList_size(&temp1) == 1) zero = 1;
 	while(temp1 != NULL || temp2 != NULL)
 	{
 		if (temp1 == NULL && current) 
@@ -157,12 +157,12 @@ void subtract(number **num1, number **num2, number **result)
 
 		if (current < 0) 
 		{
-			push_back(&tempResHead, &tempResTail, current + 10);
+			intList_push_back(&tempResHead, &tempResTail, current + 10);
 			current = -1;
 		}
 		else
 		{
-			push_back(&tempResHead, &tempResTail, current);
+			intList_push_back(&tempResHead, &tempResTail, current);
 			current = 0;
 		}
 	}
@@ -174,10 +174,10 @@ void subtract(number **num1, number **num2, number **result)
 		{
 			if (first) 
 			{
-				push_front(&(*result)->head, 10 - tempResHead->value);
+				intList_push_front(&(*result)->head, 10 - tempResHead->value);
 				first = 0;
 			}
-			else push_front(&(*result)->head, 9 - tempResHead->value); 
+			else intList_push_front(&(*result)->head, 9 - tempResHead->value); 
 			tempResHead = tempResHead->next;
 		}
 		(*result)->sign = -1;
@@ -186,7 +186,7 @@ void subtract(number **num1, number **num2, number **result)
 	{
 		while(tempResHead != NULL)
 		{
-			push_front(&(*result)->head, tempResHead->value);
+			intList_push_front(&(*result)->head, tempResHead->value);
 			tempResHead = tempResHead->next;
 		}
 	}
@@ -195,23 +195,23 @@ void subtract(number **num1, number **num2, number **result)
 		temp2 = (*num2)->head;
 		while(temp2 != NULL)
 		{
-			push_front(&(*result)->head, temp2->value);
+			intList_push_front(&(*result)->head, temp2->value);
 			temp2 = temp2->next;
 		}
 		(*result)->sign = -1;
 	}
-	del_leading_zeroes(result);
-	if ((((*result)->head)->value == 0) && size(&(*result)->head) == 1) 
+	longNum_delete_leading_zeroes(result);
+	if ((((*result)->head)->value == 0) && intList_size(&(*result)->head) == 1) 
 		(*result)->sign = 0; 
 	return;
 }
 
 //reads expression and calls the appropriate command
-void start()
+void longNum_start()
 {
-	number *num1 = number_init();
-	number *num2 = number_init();
-	number *result = number_init();
+	number *num1 = longNum_init();
+	number *num2 = longNum_init();
+	number *result = longNum_init();
 	char space, operation;
 	int i = 0, ok = 1;
 	
@@ -219,27 +219,27 @@ void start()
 	printf("Enter the arithmetic expression:\n\n");
 
 	//reading the expression
-	num1 = read(&ok);
+	num1 = longNum_read(&ok);
 	if (!num1->sign) 
 		return; //an error occurred
 	if (!ok)
 	{
-		clear_all;
+		longNum_clear_all;
 		exit(0);
 	}
 	scanf("%c", &operation);
 	scanf("%c", &space);
 	if (operation != '+' && operation != '-') 
 	{
-		error(UNKNOWN_COMMAND);
+		intList_error(UNKNOWN_COMMAND);
 		return;
 	}
-	num2 = read(&ok);
+	num2 = longNum_read(&ok);
 	if (!num2->sign)
 		return; //an error occurred
 	if (!ok)
 	{
-		clear_all;
+		longNum_clear_all;
 		exit(0);
 	}
 
@@ -247,16 +247,16 @@ void start()
 	if (num1->sign == num2->sign)
 	{
 		if (operation == '+') 
-			sum(&num1, &num2, &result);
+			longNum_sum(&num1, &num2, &result);
 		else 
-			subtract(&num1, &num2, &result);
+			longNum_subtract(&num1, &num2, &result);
 	}
 	else 
 	{
 		if (operation == '-') 
-			sum(&num1, &num2, &result);
+			longNum_sum(&num1, &num2, &result);
 		else 
-			subtract(&num1, &num2, &result);
+			longNum_subtract(&num1, &num2, &result);
 	}
 	result->sign *= num1->sign;
 	
@@ -264,10 +264,10 @@ void start()
 	printf("===\n");
 	if (result->sign == -1) 
 		printf("-");
-	print(&result->head);
+	intList_print(&result->head);
 	
 	//clearing of data
-	clear_all(&num1, &num2, &result);
+	longNum_clear_all(&num1, &num2, &result);
 }
 
 //prints useful information for user
@@ -287,6 +287,6 @@ int main(void)
 {
 	help();
 	while(1)
-		start();
+		longNum_start();
 	return 0;
 }
