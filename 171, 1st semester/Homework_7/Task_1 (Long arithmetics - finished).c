@@ -1,7 +1,7 @@
 /*
-Сложение и вычитание длинных чисел
-========================================
-Addition and subtraction of long numbers
+Р”Р»РёРЅРЅР°СЏ Р°СЂРёС„РјРµС‚РёРєР°
+===================
+Long arithmetics
 
 Author: Mikhail Kita, group 171
 */
@@ -10,8 +10,17 @@ Author: Mikhail Kita, group 171
 #include <stdlib.h>
 #include "Math.h"
 
+//deletes all numbers
+void arithm_delete_all_numbers(number **num1, number **num2, number **result)
+{
+	longNum_delete(num1);
+	longNum_delete(num2);
+	longNum_delete(result);
+	return;
+}
+
 //reads expression and calls the appropriate command
-void start(number **num1, number **num2, number **result)
+void arithm_start(number **num1, number **num2, number **result)
 {
 	char space, operation;
 	int i = 0, ok = 1;
@@ -22,9 +31,7 @@ void start(number **num1, number **num2, number **result)
 		return; //an error occurred
 	if (!ok)
 	{
-		longNum_delete(num1);
-		longNum_delete(num2);
-		longNum_delete(result);
+		arithm_delete_all_numbers(num1, num2, result);
 		exit(0);
 	}
 	scanf("%c", &operation);
@@ -34,9 +41,7 @@ void start(number **num1, number **num2, number **result)
 		return; //an error occurred
 	if (!ok)
 	{
-		longNum_delete(num1);
-		longNum_delete(num2);
-		longNum_delete(result);
+		arithm_delete_all_numbers(num1, num2, result);
 		exit(0);
 	}
 
@@ -65,7 +70,14 @@ void start(number **num1, number **num2, number **result)
 			longNum_multiply(num1, num2, result);
 	
 		else if (operation == '/')
+		{
+			if (intList_size(&(*num2)->head) == 1 && (*num2)->head->value == 0)
+			{
+				error(DIVISION_BY_ZERO);
+				return;
+			}
 			longNum_divide(num1, num2, result);
+		}
 
 		else 
 		{
@@ -87,7 +99,7 @@ void start(number **num1, number **num2, number **result)
 }
 
 //prints useful information for user
-void help()
+void arithm_help()
 {
 	printf("LONG ARITHMETICS\n\n");
 	printf("This program can compute the value of expression for the two operands.\n");
@@ -104,13 +116,13 @@ int main(void)
 	number *num1 = longNum_init();
 	number *num2 = longNum_init();
 	number *result = longNum_init();
-	help();
+	arithm_help();
 	while(1)
 	{
 		printf("\n\n\n________________________________\n");
 		printf("Enter the arithmetic expression:\n\n");
 		
-		start(&num1, &num2, &result);
+		arithm_start(&num1, &num2, &result);
 
 		//clearing of data
 		longNum_clear(&num1);
