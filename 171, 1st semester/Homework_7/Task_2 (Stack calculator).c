@@ -1,5 +1,5 @@
 /*
-Ñòåêîâûé êàëüêóëÿòîð
+Ð¡Ñ‚ÐµÐºÐ¾Ð²Ñ‹Ð¹ ÐºÐ°Ð»ÑŒÐºÑƒÐ»ÑÑ‚Ð¾Ñ€
 ====================
 Stack calculator
 
@@ -82,8 +82,15 @@ void calc_start(stack_node **stack_head)
 					longNum_multiply(&first, &second, &result);
 				
 				else if (operation == '/')
+				{
+					if (intList_size(&second->head) == 1 && second->head->value == 0)
+					{
+						error(DIVISION_BY_ZERO);
+						calc_delete_all_numbers(&value, &first, &second, &result);
+						return;
+					}
 					longNum_divide(&first, &second, &result);
-
+				}
 				else
 				{
 					error(UNKNOWN_COMMAND);
