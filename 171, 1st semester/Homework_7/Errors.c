@@ -1,5 +1,5 @@
 /*
-Описание всех типов ошибок, которые могут встретиться в проекте
+РћРїРёСЃР°РЅРёРµ РІСЃРµС… С‚РёРїРѕРІ РѕС€РёР±РѕРє, РєРѕС‚РѕСЂС‹Рµ РјРѕРіСѓС‚ РІСЃС‚СЂРµС‚РёС‚СЊСЃСЏ РІ РїСЂРѕРµРєС‚Рµ
 ================================================================
 Description of all types of errors that can occur in the project
 
@@ -19,23 +19,27 @@ void error(int value)
 			break;
 
 		case NOT_ENOUGHT_MEMORY:
-			printf("== Not enought memory.\n");
+			printf("== ERROR: not enought memory.\n");
 			break;
 
 		case INCORRECT_ARGUMENT:
-			printf("== Incorrect argument.\n");
+			printf("== ERROR: incorrect argument.\n");
 			break;
 
 		case INCORRECT_EXPRESSION:
-			printf("== Incorrect expression.\n");
+			printf("== ERROR: incorrect expression.\n");
 			break;
 
 		case UNKNOWN_COMMAND:
-			printf("== Unknown command.\n");
+			printf("== ERROR: unknown command.\n");
 			break;
 
 		case STACK_IS_EMPTY:
-			printf("== Incorrect operation: stack is empty.\n");
+			printf("== ERROR: stack is empty.\n");
+			break;
+
+		case DIVISION_BY_ZERO:
+			printf("== ERROR: integer division by zero.\n");
 			break;
 	}
 	return;
