@@ -1,5 +1,5 @@
 /*
-Объявление всех типов ошибок, которые могут встретиться в проекте
+РћР±СЉСЏРІР»РµРЅРёРµ РІСЃРµС… С‚РёРїРѕРІ РѕС€РёР±РѕРє, РєРѕС‚РѕСЂС‹Рµ РјРѕРіСѓС‚ РІСЃС‚СЂРµС‚РёС‚СЊСЃСЏ РІ РїСЂРѕРµРєС‚Рµ
 =================================================================
 Declaration of all types of errors that can occur in the project
 
@@ -13,7 +13,8 @@ enum errors
 	INCORRECT_ARGUMENT = 3,
 	INCORRECT_EXPRESSION = 4,
 	UNKNOWN_COMMAND = 5,
-	STACK_IS_EMPTY = 6
+	STACK_IS_EMPTY = 6,
+	DIVISION_BY_ZERO = 7
 } errors;
 
 //prints message about error
