@@ -1,5 +1,5 @@
 /*
-Ðåàëèçàöèÿ ìàòåìàòèêè äëÿ äëèííûõ ÷èñëåë
+Ð ÐµÐ°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ñ Ð¼Ð°Ñ‚ÐµÐ¼Ð°Ñ‚Ð¸ÐºÐ¸ Ð´Ð»Ñ Ð´Ð»Ð¸Ð½Ð½Ñ‹Ñ… Ñ‡Ð¸ÑÐ»ÐµÐ»
 ===========================================
 Realization of mathematics for long numbers
 
@@ -96,6 +96,8 @@ void longNum_subtract(number **num1, number **num2, number **result)
 					digit = 0;
 					current = 1;
 				}
+				else
+					current = 0;
 				intList_push_front(&(*result)->head, &(*result)->tail, digit);
 				first = 0;
 			}
@@ -106,6 +108,8 @@ void longNum_subtract(number **num1, number **num2, number **result)
 					digit = 0;
 					current = 1;
 				}
+				else
+					current = 0;
 				intList_push_front(&(*result)->head, &(*result)->tail, digit); 
 			}
 			tempRes->head = tempRes->head->next;
