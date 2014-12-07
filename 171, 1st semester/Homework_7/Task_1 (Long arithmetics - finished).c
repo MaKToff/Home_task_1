@@ -10,39 +10,36 @@ Author: Mikhail Kita, group 171
 #include <stdlib.h>
 #include "Math.h"
 
-//deletes all numbers
-void arithm_delete_all_numbers(number **num1, number **num2, number **result)
-{
-	longNum_delete(num1);
-	longNum_delete(num2);
-	longNum_delete(result);
-	return;
-}
-
 //reads expression and calls the appropriate command
-void arithm_start(number **num1, number **num2, number **result)
+void arithm_start(number **num1, number **num2, number **result, int *finished)
 {
-	char space, operation;
-	int i = 0, ok = 1;
+	char space, operation, first_digit;
+	int i = 0, ok = 0;
 
 	//reading the expression
-	longNum_read(num1, &ok);
-	if (!(*num1)->sign) 
-		return; //an error occurred
-	if (!ok)
+	scanf("%c", &first_digit);
+	if (first_digit == '#') //user wants to close application
 	{
-		arithm_delete_all_numbers(num1, num2, result);
-		exit(0);
+		*finished = 1;
+		return;
 	}
+	longNum_read(num1, first_digit, &ok);
+
+	if ((*num1)->sign == 0xDEAD)
+	{
+		error(INCORRECT_ARGUMENT);
+		return;
+	}
+
 	scanf("%c", &operation);
 	scanf("%c", &space);
-	longNum_read(num2, &ok);
-	if (!(*num2)->sign)
-		return; //an error occurred
-	if (!ok)
+	scanf("%c", &first_digit);
+	longNum_read(num2, first_digit, &ok);
+
+	if ((*num2)->sign == 0xDEAD)
 	{
-		arithm_delete_all_numbers(num1, num2, result);
-		exit(0);
+		error(INCORRECT_ARGUMENT);
+		return;
 	}
 
 	//choice of appropriate command
@@ -82,6 +79,7 @@ void arithm_start(number **num1, number **num2, number **result)
 		else 
 		{
 			error(UNKNOWN_COMMAND);
+			printf("== Expected: +, -, * or /. Found: %c\n", operation);
 			return;
 		}
 
@@ -89,10 +87,10 @@ void arithm_start(number **num1, number **num2, number **result)
 			(*result)->sign *= (-1);
 		else (*result)->sign = 1;
 	}
-	
+
 	//printing the answer
 	printf("===\n");
-	if ((*result)->sign == -1) 
+	if ((*result)->sign == -1)
 		printf("-");
 	intList_print(&(*result)->head);
 	return;
@@ -102,7 +100,7 @@ void arithm_start(number **num1, number **num2, number **result)
 void arithm_help()
 {
 	printf("LONG ARITHMETICS\n\n");
-	printf("This program can compute the value of expression for the two operands.\n");
+	printf("This program can compute the value of expression for two operands.\n");
 	printf("It supports four operations:\n\n");
 	printf("addition (+)\nsubtraction (-)\nmultiplication (*)\ndivision (/)\n\n");
 	printf("You may enter expressions as through the spaces: a + b\n");
@@ -116,18 +114,28 @@ int main(void)
 	number *num1 = longNum_init();
 	number *num2 = longNum_init();
 	number *result = longNum_init();
+	int finished = 0;
+
 	arithm_help();
 	while(1)
 	{
 		printf("\n\n\n________________________________\n");
 		printf("Enter the arithmetic expression:\n\n");
 		
-		arithm_start(&num1, &num2, &result);
+		arithm_start(&num1, &num2, &result, &finished);
+
+		if (finished)
+			break;
 
 		//clearing of data
 		longNum_clear(&num1);
 		longNum_clear(&num2);
 		longNum_clear(&result);
 	}
+
+	//deliting all numbers
+	longNum_delete(&num1);
+	longNum_delete(&num2);
+	longNum_delete(&result);
 	return 0;
 }
