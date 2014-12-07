@@ -1,5 +1,5 @@
 /*
-Объявление функций для стека
+РћР±СЉСЏРІР»РµРЅРёРµ С„СѓРЅРєС†РёР№ РґР»СЏ СЃС‚РµРєР°
 ==============================
 Declaring functions for stack
 
@@ -14,14 +14,17 @@ typedef struct stack_node
 	struct stack_node *next;
 } stack_node;
 
-//clears all elements from list
-void stack_clear_all(stack_node **head);
+//deletes all elements from stack
+void stack_delete(stack_node **head);
 
-//returns size of list
+//clears all elements from stack
+void stack_clear(stack_node **head);
+
+//returns size of stack
 int stack_size(stack_node **head);
 
-//returns first element and deletes it from list
+//returns first element and deletes it from stack
 void stack_pop(stack_node **head, number **num);
 
-//adds new element at the head of list
+//adds new element to stack
 void stack_push(stack_node **head, number **data);
