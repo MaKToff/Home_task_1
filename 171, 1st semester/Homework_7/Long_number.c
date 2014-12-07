@@ -1,5 +1,5 @@
 /*
-Ôóíêöèè äëÿ äëèííûõ ÷èñëåë
+Ð¤ÑƒÐ½ÐºÑ†Ð¸Ð¸ Ð´Ð»Ñ Ð´Ð»Ð¸Ð½Ð½Ñ‹Ñ… Ñ‡Ð¸ÑÐ»ÐµÐ»
 ==========================
 Functions for long numbers
 
@@ -22,7 +22,6 @@ number* longNum_init()
 	}
 	temp->sign = 1;
 	temp->head = NULL;
-	temp->tail = NULL;
 	return temp;
 }
 
@@ -37,51 +36,48 @@ void longNum_clear(number **num)
 //deletes given number
 void longNum_delete(number **num)
 {
-	intList_delete(&(*num)->head);
+	longNum_clear(num);
 	free(*num);
 	return;
 }
 
 //reads digits of number 
-void longNum_read(number **num, int *ok)
+void longNum_read(number **num, char first_digit, int *ok)
 {
 	char digit;
 
-	scanf("%c", &digit);
+	digit = first_digit;
 	if (digit == '-') 
 		(*num)->sign = -1;
-	else if (digit == '#')
-	{
-		*ok = 0; //user wants to close application
-		return; 
-	}
 	else if (digit < '0' || digit > '9') 
 	{
-		error(INCORRECT_ARGUMENT);
 		while((int)digit != 10) 
 			scanf("%c", &digit);
-		(*num)->sign = 0;
+		(*num)->sign = 0xDEAD;
 		return;
 	}
 	else 
-		intList_push_front(&(*num)->head, &(*num)->tail, (int)digit - (int)('0'));
+		intList_push(&(*num)->head, (int)digit - (int)('0'));
 	while (1)
 	{
 		scanf("%c", &digit);
 		if (digit < ('0') || digit > ('9'))
 		{
-			if ((int)digit == 10 || digit == ' ') 
+			if ((int)digit == 10 || digit == ' ')
+			{
+				if ((int)digit == 10)
+					*ok = 1;
 				break;
+			}
 			else 
 			{
-				error(INCORRECT_ARGUMENT);
 				while((int)digit != 10) 
 					scanf("%c", &digit);
-				(*num)->sign = 0;
+				(*num)->sign = 0xDEAD;
 				return;
 			}
 		}
-		intList_push_front(&(*num)->head, &(*num)->tail, (int)digit - (int)('0'));
+		intList_push(&(*num)->head, (int)digit - (int)('0'));
 	}
 	return;
 }
@@ -94,7 +90,7 @@ void longNum_delete_leading_zeroes(number **num)
 		intList_clear_first(&(*num)->head, 0);
 		if ((*num)->head == NULL) 
 		{
-			intList_push_front(&(*num)->head, &(*num)->tail, 0);
+			intList_push(&(*num)->head, 0);
 			break;
 		}
 	}
@@ -102,16 +98,19 @@ void longNum_delete_leading_zeroes(number **num)
 }
 
 //reverses all digits in number
-number* longNum_reverse(number **num)
+void longNum_reverse(number **num)
 {
-	number *result = longNum_init();
-	intList_node *tempNum = (*num)->head;
+	intList_node *result = NULL;
+	intList_node *temp = (*num)->head;
+	int sign = (*num)->sign;
 
-	result->sign = (*num)->sign;
-	while(tempNum != NULL)
+	while(temp != NULL)
 	{
-		intList_push_front(&result->head, &result->tail, tempNum->value);
-		tempNum = tempNum->next;
+		intList_push(&result, temp->value);
+		temp = temp->next;
 	}
-	return result;
+	longNum_clear(num);
+	(*num)->head = result;
+	(*num)->sign = sign;
+	return;
 }
