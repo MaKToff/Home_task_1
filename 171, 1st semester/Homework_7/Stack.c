@@ -1,5 +1,5 @@
 /*
-Реализация стека
+Р РµР°Р»РёР·Р°С†РёСЏ СЃС‚РµРєР°
 ====================
 Realization of stack
 
@@ -11,15 +11,24 @@ Author: Mikhail Kita, group 171
 #include <string.h>
 #include "Stack.h"
 
-//clears all elements from satck
-void stack_clear_all(stack_node **head)
+//deletes all elements from stack
+void stack_delete(stack_node **head)
+{
+	stack_clear(head);
+	free(*head);
+	return;
+}
+
+//clears all elements from stack
+void stack_clear(stack_node **head)
 {
 	stack_node *temp = *head;
 	
 	while (temp != NULL)
 	{
 		*head = (*head)->next;
-		longNum_clear(&temp->value);
+		longNum_delete(&temp->value);
+		free(temp);
 		temp = *head;
 	}
 	return;
@@ -42,13 +51,16 @@ int stack_size(stack_node **head)
 //returns first element and deletes it from stack
 void stack_pop(stack_node **head, number **num)
 {
+	stack_node *temp = *head;
+
 	if (*head == NULL) 
 	{
 		error(STACK_IS_EMPTY);
 		return;
 	}
-	*num = (*head)->value;
+	*num = temp->value;
 	*head = (*head)->next;
+	free(temp);
 	return;
 }
 
@@ -56,18 +68,20 @@ void stack_pop(stack_node **head, number **num)
 void stack_push(stack_node **head, number **data)
 {
 	stack_node *temp = (stack_node*) malloc(sizeof(stack_node));
-	
+	intList_node *tempNum = (*data)->head;
+
 	if (!temp)
 	{
 		error(NOT_ENOUGHT_MEMORY);
 		return;
 	}
 	temp->value = longNum_init();
-	while((*data)->head != NULL)
+	while(tempNum != NULL)
 	{
-		intList_push_back(&temp->value->head, &temp->value->tail, (*data)->head->value);
-		(*data)->head = (*data)->head->next;
+		intList_push(&temp->value->head, tempNum->value);
+		tempNum = tempNum->next;
 	}
+	longNum_reverse(&temp->value);
 	temp->value->sign = (*data)->sign;
 	temp->next = *head;
 	*head = temp;
