@@ -28,31 +28,28 @@ void longNum_sum(number **num1, number **num2, number **result)
 			current += temp2->value;
 			temp2 = temp2->next;
 		}
-		intList_push_front(&(*result)->head, &(*result)->tail, current % 10);
+		intList_push(&(*result)->head, current % 10);
 		current /= 10;
 	}
 	if (current) 
-		intList_push_front(&(*result)->head, &(*result)->tail, current);
+		intList_push(&(*result)->head, current);
 	longNum_delete_leading_zeroes(result);
 
 	//if result is zero
 	if ((((*result)->head)->value == 0) && intList_size(&(*result)->head) == 1)
 		(*result)->sign = 0;
-
-	//clearing of data
-	intList_delete(&temp1);
-	intList_delete(&temp2);
 	return;
 }
 
 //executes the subtraction of two numbers
 void longNum_subtract(number **num1, number **num2, number **result)
 {
+	intList_node *temp = NULL;
 	intList_node *temp1 = (*num1)->head;
 	intList_node *temp2 = (*num2)->head;
 	number *tempRes = longNum_init();
 	int current = 0, less = 0, first = 1, digit = 0;
-	
+
 	(*result)->sign = 1;
 	while(temp1 != NULL || temp2 != NULL)
 	{
@@ -71,23 +68,25 @@ void longNum_subtract(number **num1, number **num2, number **result)
 
 		if (current < 0) 
 		{
-			intList_push_back(&tempRes->head, &tempRes->tail, current + 10);
+			intList_push(&tempRes->head, current + 10);
 			current = -1;
 		}
 		else
 		{
-			intList_push_back(&tempRes->head, &tempRes->tail, current);
+			intList_push(&tempRes->head, current);
 			current = 0;
 		}
 	}
-	if (current) 
+	longNum_reverse(&tempRes);
+	if (current)
 		less = 1;
 	if (less)
 	{
 		current = 0;
-		while(tempRes->head != NULL)
+		temp = tempRes->head;
+		while(temp != NULL)
 		{
-			digit = 9 - (int)*(&tempRes->head->value) + current;
+			digit = 9 - (int)*(&temp->value) + current;
 			if (first) 
 			{
 				digit++;
@@ -98,7 +97,7 @@ void longNum_subtract(number **num1, number **num2, number **result)
 				}
 				else
 					current = 0;
-				intList_push_front(&(*result)->head, &(*result)->tail, digit);
+				intList_push(&(*result)->head, digit);
 				first = 0;
 			}
 			else
@@ -110,19 +109,20 @@ void longNum_subtract(number **num1, number **num2, number **result)
 				}
 				else
 					current = 0;
-				intList_push_front(&(*result)->head, &(*result)->tail, digit); 
+				intList_push(&(*result)->head, digit); 
 			}
-			tempRes->head = tempRes->head->next;
+			temp = temp->next;
 		}
 		(*result)->sign = -1;
 	}
 	else
 	{
-		while(tempRes->head != NULL)
+		temp = tempRes->head;
+		while(temp != NULL)
 		{
-			digit = (int)*(&tempRes->head->value);
-			intList_push_front(&(*result)->head, &(*result)->tail, digit);
-			tempRes->head = tempRes->head->next;
+			digit = (int)*(&temp->value);
+			intList_push(&(*result)->head, digit);
+			temp = temp->next;
 		}
 	}
 	longNum_delete_leading_zeroes(result);
@@ -130,10 +130,8 @@ void longNum_subtract(number **num1, number **num2, number **result)
 	//if result is zero
 	if ((((*result)->head)->value == 0) && intList_size(&(*result)->head) == 1) 
 		(*result)->sign = 0;
-
+	
 	//clearing of data
-	intList_delete(&temp1);
-	intList_delete(&temp2);
 	longNum_delete(&tempRes);
 	return;
 }
@@ -141,6 +139,7 @@ void longNum_subtract(number **num1, number **num2, number **result)
 //executes the multiplication of two numbers
 void longNum_multiply(number **num1, number **num2, number **result)
 {
+	intList_node *temp = NULL;
 	intList_node *temp1Mult = (*num1)->head;
 	intList_node *temp2Mult = (*num2)->head;
 	number *temp1Sum = longNum_init();
@@ -169,33 +168,36 @@ void longNum_multiply(number **num1, number **num2, number **result)
 		while(temp1Mult != NULL)
 		{
 			current += digit * temp1Mult->value;
-			intList_push_back(&temp1Sum->head, &temp1Sum->tail, current % 10);
+			intList_push(&temp1Sum->head, current % 10);
 			current /= 10;
 			temp1Mult = temp1Mult->next;
 		}
 		if (current)
-			intList_push_back(&temp1Sum->head, &temp1Sum->tail, current);
+			intList_push(&temp1Sum->head, current);
+		longNum_reverse(&temp1Sum);
 		for (i = 0; i < counter; ++i)
-			intList_push_front(&temp1Sum->head, &temp1Sum->tail, 0);
+			intList_push(&temp1Sum->head, 0);
 
 		intList_clear_all(&tempResSum->head);
 		longNum_sum(&temp1Sum, &temp2Sum, &tempResSum);
 		intList_clear_all(&temp2Sum->head);
 
-		while(tempResSum->head != NULL)
+		temp = tempResSum->head;
+		while(temp != NULL)
 		{
-			digit = (int)*(&tempResSum->head->value);
-			intList_push_front(&temp2Sum->head, &temp2Sum->tail, digit);
-			tempResSum->head = tempResSum->head->next;
+			digit = (int)*(&temp->value);
+			intList_push(&temp2Sum->head, digit);
+			temp = temp->next;
 		}
 		counter++;
 		temp2Mult = temp2Mult->next;
 	}
-	while(temp2Sum->head != NULL)
+	temp = temp2Sum->head;
+	while(temp != NULL)
 	{
-		digit = (int)*(&temp2Sum->head->value);
-		intList_push_front(&(*result)->head, &(*result)->tail, digit);
-		temp2Sum->head = temp2Sum->head->next;
+		digit = (int)*(&temp->value);
+		intList_push(&(*result)->head, digit);
+		temp = temp->next;
 	}
 	longNum_delete_leading_zeroes(result);
 
@@ -204,8 +206,6 @@ void longNum_multiply(number **num1, number **num2, number **result)
 		(*result)->sign = 0;
 
 	//clearing of data
-	intList_delete(&temp1Mult);
-	intList_delete(&temp2Mult);
 	longNum_delete(&temp1Sum);
 	longNum_delete(&temp2Sum);
 	longNum_delete(&tempResSum);
@@ -215,42 +215,45 @@ void longNum_multiply(number **num1, number **num2, number **result)
 //executes the integer division of two numbers
 void longNum_divide(number **num1, number **num2, number **result)
 {
-	number *temp1Div = longNum_reverse(num1);
+	intList_node *temp = NULL;
+	intList_node *temp1 = NULL;
+	number *temp1Div = *num1;
 	number *temp1Sub = longNum_init();
-	number *temp1ReverseSub = longNum_init();
-	number *temp2Sub = longNum_init();
+	number *temp2Sub = *num2;
 	number *tempResSub = longNum_init();
 	int digit = 0, tempDigit = 0, less = 0, current = 0;
 
-	temp2Sub->head = (*num2)->head;
-	while(temp1Div->head != NULL)
+	longNum_reverse(&temp1Div);
+	temp1 = temp1Div->head;
+	while(temp1 != NULL)
 	{
 		current = 0;
-		digit = (int)temp1Div->head->value;
-		intList_push_back(&temp1Sub->head, &temp1Sub->tail, digit);
+		digit = (int)temp1->value;
+		intList_push(&temp1Sub->head, digit);
 
 		//while we can subtract
 		while(1)
 		{
-			intList_clear_all(&tempResSub->head);
-			temp1ReverseSub = longNum_reverse(&temp1Sub);
-			longNum_subtract(&temp1ReverseSub, &temp2Sub, &tempResSub);
+			longNum_clear(&tempResSub);
+			longNum_subtract(&temp1Sub, &temp2Sub, &tempResSub);
 
 			if (tempResSub->sign < 0)
 				break;
 
-			intList_clear_all(&temp1Sub->head);
-			while(tempResSub->head != NULL)
+			longNum_clear(&temp1Sub);
+			temp = tempResSub->head;
+			while(temp != NULL)
 			{
-				tempDigit = (int)*(&tempResSub->head->value);
-				intList_push_back(&temp1Sub->head, &temp1Sub->tail, tempDigit);
-				tempResSub->head = tempResSub->head->next;
+				tempDigit = (int)*(&temp->value);
+				intList_push(&temp1Sub->head, tempDigit);
+				temp = temp->next;
 			}
 			current++;
 		}
-		temp1Div->head = temp1Div->head->next;
-		intList_push_back(&(*result)->head, &(*result)->tail, current);
+		temp1 = temp1->next;
+		intList_push(&(*result)->head, current);
 	}
+	longNum_reverse(&(*result));
 	longNum_delete_leading_zeroes(result);
 
 	//if result is zero
@@ -258,9 +261,7 @@ void longNum_divide(number **num1, number **num2, number **result)
 			(*result)->sign = 0;
 
 	//clearing of data
-	longNum_delete(&temp1Div);
 	longNum_delete(&temp1Sub);
-	longNum_delete(&temp1ReverseSub);
 	longNum_delete(&tempResSub);
 	return;
 }
