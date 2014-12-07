@@ -1,5 +1,5 @@
 /*
-Ðåàëèçàöèÿ îäíîñâÿçíîãî ñïèñêà
+Ð ÐµÐ°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ñ Ð¾Ð´Ð½Ð¾ÑÐ²ÑÐ·Ð½Ð¾Ð³Ð¾ ÑÐ¿Ð¸ÑÐºÐ°
 ===============================
 Realization of linked list
 
@@ -90,7 +90,7 @@ void intList_print(intList_node **head)
 }
 
 //adds new element at the head of list
-void intList_push_front(intList_node **head, intList_node **tail, int data)
+void intList_push(intList_node **head, int data)
 {
 	intList_node *temp = (intList_node*) malloc(sizeof(intList_node));
 	
@@ -101,30 +101,6 @@ void intList_push_front(intList_node **head, intList_node **tail, int data)
 	}
 	temp->value = data;
 	temp->next = *head;
-	if (*head == NULL) 
-		*tail = temp;
 	*head = temp;
-	return;
-}
-
-//adds new element at the end of list
-void intList_push_back(intList_node **head, intList_node **tail, int data)
-{
-	intList_node *temp = (intList_node*) malloc(sizeof(intList_node));
-	
-	if (!temp) 
-	{
-		error(NOT_ENOUGHT_MEMORY);
-		return;
-	}
-	if (*head == NULL) 
-	{
-		intList_push_front(head, tail, data);
-		return;
-	}
-	temp->value = data;
-	temp->next = NULL;
-	(*tail)->next = temp;
-	*tail = temp;
 	return;
 }
