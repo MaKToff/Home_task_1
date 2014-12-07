@@ -1,5 +1,5 @@
 /*
-Объявление функций для односвязного списка
+РћР±СЉСЏРІР»РµРЅРёРµ С„СѓРЅРєС†РёР№ РґР»СЏ РѕРґРЅРѕСЃРІСЏР·РЅРѕРіРѕ СЃРїРёСЃРєР°
 ==========================================
 Declaring functions for linked list
 
@@ -30,7 +30,4 @@ int intList_size(intList_node **head);
 void intList_print(intList_node **head);
 
 //adds new element at the head of list
-void intList_push_front(intList_node **head, intList_node **tail, int data);
-
-//adds new element at the end of list
-void intList_push_back(intList_node **head, intList_node **tail, int data);
+void intList_push(intList_node **head, int data);
