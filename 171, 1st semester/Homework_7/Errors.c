@@ -12,10 +12,11 @@ Author: Mikhail Kita, group 171
 //prints message about error
 void error(int value)
 {
+	printf("\n");
 	switch(value)
 	{
 		case LIST_IS_EMPTY:
-			printf("== Incorrect operation: list is empty.\n");
+			printf("== ERROR: list is empty.\n");
 			break;
 
 		case NOT_ENOUGHT_MEMORY:
@@ -40,6 +41,10 @@ void error(int value)
 
 		case DIVISION_BY_ZERO:
 			printf("== ERROR: integer division by zero.\n");
+			break;
+
+		case STACK_IS_TOO_SMALL:
+			printf("== ERROR: not enough elements in stack.\n");
 			break;
 	}
 	return;
