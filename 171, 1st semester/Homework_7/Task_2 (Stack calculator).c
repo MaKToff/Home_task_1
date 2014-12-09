@@ -39,26 +39,24 @@ void calc_start(stack_node **stack_head, number **value, number **num1, number *
 		{
 			longNum_read(value, first_digit, &ok);
 			
-			if ((first_digit < '0' || first_digit > '9') && intList_size(&(*value)->head) == 0)
-			{
-				error(UNKNOWN_COMMAND);
-				printf("== Expected: +, -, * or /. Found: %c\n", first_digit);
-				return;
-			}
-
-			if ((*value)->sign == 0xDEAD)
-			{
-				error(INCORRECT_ARGUMENT);
-				return;
-			}
-
 			if (intList_size(&(*value)->head) == 0)
 			{
 				if (first_digit == '-')
 					operation = first_digit;
 				else
-					return; //an error occurred
+				{
+					error(UNKNOWN_COMMAND);
+					printf("== Expected: +, -, * or /. Found: %c\n", first_digit);
+					return;
+				}
 			}
+
+			else if ((*value)->sign == 0xDEAD)
+			{
+				error(INCORRECT_ARGUMENT);
+				return;
+			}
+
 			else
 				stack_push(stack_head, value);
 		}
@@ -147,7 +145,7 @@ void calc_help()
 	printf("STACK CALCULATOR\n\n");
 	printf("This is stack calculator for long numbers.\n");
 	printf("It supports four operations:\n\n");
-	printf("addition (+)\nsubtraction (-)\nmultiplication (*)\ndivision (/)\n\n");
+	printf("addition (+)\nsubtraction (-)\nmultiplication (*)\ninteger  division (/)\n\n");
 	printf("You should enter expressions through the spaces\n");
 	printf("in reverse polish notation (RPN):\n\n");
 	printf("a b + c *     ===     (a + b) * c\n\n\n");
