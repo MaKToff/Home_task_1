@@ -11,7 +11,7 @@ Author: Mikhail Kita, group 171
 #include "Math.h"
 
 //reads expression and calls the appropriate command
-void arithm_start(number **num1, number **num2, number **result, int *finished)
+int arithm_start(number **num1, number **num2, number **result)
 {
 	char space, operation, first_digit;
 	int i = 0, ok = 0;
@@ -19,18 +19,15 @@ void arithm_start(number **num1, number **num2, number **result, int *finished)
 	//reading the expression
 	scanf("%c", &first_digit);
 	if (first_digit == '#') //user wants to close application
-	{
-		*finished = 1;
-		return;
-	}
+		return 1;
+
 	longNum_read(num1, first_digit, &ok);
 
 	if ((*num1)->sign == 0xDEAD)
 	{
 		error(INCORRECT_ARGUMENT);
-		return;
+		return 0;
 	}
-
 	scanf("%c", &operation);
 	scanf("%c", &space);
 	scanf("%c", &first_digit);
@@ -39,7 +36,7 @@ void arithm_start(number **num1, number **num2, number **result, int *finished)
 	if ((*num2)->sign == 0xDEAD)
 	{
 		error(INCORRECT_ARGUMENT);
-		return;
+		return 0;
 	}
 
 	//choice of appropriate command
@@ -71,7 +68,7 @@ void arithm_start(number **num1, number **num2, number **result, int *finished)
 			if (intList_size(&(*num2)->head) == 1 && (*num2)->head->value == 0)
 			{
 				error(DIVISION_BY_ZERO);
-				return;
+				return 0;
 			}
 			longNum_divide(num1, num2, result);
 		}
@@ -80,7 +77,7 @@ void arithm_start(number **num1, number **num2, number **result, int *finished)
 		{
 			error(UNKNOWN_COMMAND);
 			printf("== Expected: +, -, * or /. Found: %c\n", operation);
-			return;
+			return 0;
 		}
 
 		if ((*num1)->sign != (*num2)->sign) 
@@ -93,7 +90,7 @@ void arithm_start(number **num1, number **num2, number **result, int *finished)
 	if ((*result)->sign == -1)
 		printf("-");
 	intList_print(&(*result)->head);
-	return;
+	return 0;
 }
 
 //prints useful information for user
@@ -102,7 +99,7 @@ void arithm_help()
 	printf("LONG ARITHMETICS\n\n");
 	printf("This program can compute the value of expression for two operands.\n");
 	printf("It supports four operations:\n\n");
-	printf("addition (+)\nsubtraction (-)\nmultiplication (*)\ndivision (/)\n\n");
+	printf("addition (+)\nsubtraction (-)\nmultiplication (*)\ninteger  division (/)\n\n");
 	printf("You may enter expressions as through the spaces: a + b\n");
 	printf("well as through the newlines:\n\n");
 	printf("a\n+\nb\n\n");
@@ -122,7 +119,7 @@ int main(void)
 		printf("\n\n\n________________________________\n");
 		printf("Enter the arithmetic expression:\n\n");
 		
-		arithm_start(&num1, &num2, &result, &finished);
+		finished = arithm_start(&num1, &num2, &result);
 
 		if (finished)
 			break;
