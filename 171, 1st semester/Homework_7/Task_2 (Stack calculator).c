@@ -11,9 +11,9 @@ Author: Mikhail Kita, group 171
 #include "Stack.h"
 
 //processes the commands and calls the necessary functions
-void calc_start(stack_node **stack_head, number **value, number **num1, number **num2, number **result, int *finished)
+int calc_start(stack_node **stack_head, number **value, number **num1, number **num2, number **result, char *trash)
 {
-	char trash = '\0', operation = '\0', first_digit = '\0';
+	char operation = '\0', first_digit = '\0';
 	int i = 0, ok = 0;
 
 	while(1)
@@ -24,15 +24,17 @@ void calc_start(stack_node **stack_head, number **value, number **num1, number *
 		scanf("%c", &first_digit);
 
 		if (first_digit == '#') //user wants to close application
-		{
-			*finished = 1;
-			return;
-		}
+			return 1;
 
 		else if (first_digit == '+' || first_digit == '*' || first_digit == '/')
 		{
-			scanf("%c", &trash);
+			scanf("%c", trash);
 			operation = first_digit;
+			if ((int)*trash != 10 && *trash != ' ')
+			{
+				error(INCORRECT_ARGUMENT);
+				return 0;
+			}
 		}
 
 		else
@@ -47,14 +49,14 @@ void calc_start(stack_node **stack_head, number **value, number **num1, number *
 				{
 					error(UNKNOWN_COMMAND);
 					printf("== Expected: +, -, * or /. Found: %c\n", first_digit);
-					return;
+					return 0;
 				}
 			}
 
 			else if ((*value)->sign == 0xDEAD)
 			{
 				error(INCORRECT_ARGUMENT);
-				return;
+				return 0;
 			}
 
 			else
@@ -67,9 +69,7 @@ void calc_start(stack_node **stack_head, number **value, number **num1, number *
 			if (stack_size(stack_head) < 2)
 			{
 				error(STACK_IS_TOO_SMALL);
-				while((int)trash != 10) 
-					scanf("%c", &trash);
-				return;
+				return 0;
 			}
 			longNum_delete(num1);
 			longNum_delete(num2);
@@ -107,7 +107,7 @@ void calc_start(stack_node **stack_head, number **value, number **num1, number *
 					if (intList_size(&(*num2)->head) == 1 && (*num2)->head->value == 0)
 					{
 						error(DIVISION_BY_ZERO);
-						return;
+						return 0;
 					}
 					longNum_divide(num1, num2, result);
 				}
@@ -118,7 +118,7 @@ void calc_start(stack_node **stack_head, number **value, number **num1, number *
 			longNum_reverse(result);
 			stack_push(stack_head, result);
 			
-			if ((int)trash == 10 || ok) //if newline was introduced
+			if ((int)*trash == 10 || ok) //if newline was introduced
 				break;
 		}
 		if (ok) //the end of input found
@@ -136,7 +136,7 @@ void calc_start(stack_node **stack_head, number **value, number **num1, number *
 		longNum_reverse(value);
 		intList_print(&(*value)->head);
 	}
-	return;
+	return 0;
 }
 
 //prints useful information for user
@@ -160,6 +160,7 @@ int main(void)
 	number *num2 = longNum_init();
 	number *result = longNum_init();
 	int finished = 0;
+	char trash = '\12';
 
 	calc_help();
 	while(1)
@@ -167,10 +168,15 @@ int main(void)
 		printf("\n\n\n________________________________\n");
 		printf("Enter the arithmetic expression:\n\n");
 
-		calc_start(&stack_head, &value, &num1, &num2, &result, &finished);
+		finished = calc_start(&stack_head, &value, &num1, &num2, &result, &trash);
 
 		if (finished)
 			break;
+
+		//reading of unnecessary input
+		if ((int)trash != 10)
+			while((int)trash != 10) 
+				scanf("%c", &trash);
 
 		//clearing of data
 		longNum_clear(&value);
