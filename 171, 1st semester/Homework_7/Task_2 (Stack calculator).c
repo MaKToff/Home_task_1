@@ -52,7 +52,7 @@ int calc_start(stack_node **stack_head, number **value, number **num1, number **
 					return 0;
 				}
 			}
-
+			
 			else if ((*value)->sign == 0xDEAD)
 			{
 				error(INCORRECT_ARGUMENT);
@@ -136,6 +136,7 @@ int calc_start(stack_node **stack_head, number **value, number **num1, number **
 		longNum_reverse(value);
 		intList_print(&(*value)->head);
 	}
+	*trash = '\12';
 	return 0;
 }
 
@@ -160,7 +161,7 @@ int main(void)
 	number *num2 = longNum_init();
 	number *result = longNum_init();
 	int finished = 0;
-	char trash = '\12';
+	char trash = '\0';
 
 	calc_help();
 	while(1)
@@ -168,6 +169,7 @@ int main(void)
 		printf("\n\n\n________________________________\n");
 		printf("Enter the arithmetic expression:\n\n");
 
+		trash = '\0';
 		finished = calc_start(&stack_head, &value, &num1, &num2, &result, &trash);
 
 		if (finished)
