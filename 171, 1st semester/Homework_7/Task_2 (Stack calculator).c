@@ -13,6 +13,7 @@ Author: Mikhail Kita, group 171
 //processes the commands and calls the necessary functions
 int calc_start(stack_node **stack_head, number **value, number **num1, number **num2, number **result, char *trash)
 {
+	intList_node *temp = NULL;
 	char operation = '\0', first_digit = '\0';
 	int i = 0, ok = 0;
 
@@ -25,6 +26,24 @@ int calc_start(stack_node **stack_head, number **value, number **num1, number **
 
 		if (first_digit == '#') //user wants to close application
 			return 1;
+
+		else if (first_digit == '=')
+		{
+			scanf("%c", trash);
+			if (stack_size(stack_head) < 1)
+			{
+				error(STACK_IS_TOO_SMALL);
+				return 0;
+			}
+			temp = (*stack_head)->value->head;
+			printf("=== ");
+			if ((*stack_head)->value->sign == -1)
+				printf("-");
+			intList_print(&temp);
+			printf("\n");
+			if ((int)*trash == 10) //if newline was introduced
+				break;
+		}	
 
 		else if (first_digit == '+' || first_digit == '*' || first_digit == '/')
 		{
@@ -110,7 +129,7 @@ int calc_start(stack_node **stack_head, number **value, number **num1, number **
 						return 0;
 					}
 					longNum_divide(num1, num2, result);
-				}
+				} 
 				if ((*num1)->sign != (*num2)->sign)
 					(*result)->sign *= (-1);
 				else (*result)->sign = 1;
@@ -150,6 +169,7 @@ void calc_help()
 	printf("You should enter expressions through the spaces\n");
 	printf("in reverse polish notation (RPN):\n\n");
 	printf("a b + c *     ===     (a + b) * c\n\n\n");
+	printf("Enter '=' to write first element of stack\n");
 	printf("Enter '#' for quit");
 }
 
