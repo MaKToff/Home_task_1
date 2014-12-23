@@ -1,106 +1,116 @@
 /*
-Реализация односвязного списка
-===============================
-Realization of linked list
+Функции для длинных числел
+==========================
+Functions for long numbers
 
 Author: Mikhail Kita, group 171
 */
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "Linked_list.h"
+#include "Long_number.h"
 
-//deletes given intList
-void intList_delete(intList_node **head)
+//executes the initial declaration variable of type "number"
+number* longNum_init()
 {
-	intList_clear_all(head);
-	free(*head);
-	return;
-}
+	number *temp = (number*) malloc(sizeof(number));
 
-//clears all elements from list
-void intList_clear_all(intList_node **head)
-{
-	intList_node *temp = *head;
-
-	while (temp != NULL)
-	{
-		*head = (*head)->next;
-		free(temp);
-		temp = *head;
-	}
-	return;
-}
-
-//clears first element with given value
-void intList_clear_first(intList_node **head, int data)
-{
-	intList_node *temp = *head;
-	intList_node *previous = NULL;
-	int ok = 0;
-	
-	while (temp != NULL)
-	{
-		if (temp->value == data)
-		{
-			if (temp == *head) *head = (*head)->next;
-			else previous->next = temp->next;
-			ok = 1;
-			break;
-		}
-		previous = temp;
-		temp = temp->next;
-		if (ok) 
-			break;
-	}
-	free(temp);
-	return;
-}
-
-//returns size of list
-int intList_size(intList_node **head)
-{
-	intList_node *temp = *head;
-	int current = 0;
-	
-	while (temp != NULL)
-	{
-		temp = temp->next;
-		current++;
-	}
-	return current;
-}
-
-//prints all elements of list
-void intList_print(intList_node **head)
-{
-	intList_node *temp = *head;
-	
 	if (temp == NULL) 
 	{
-		error(LIST_IS_EMPTY);
+		error(NOT_ENOUGHT_MEMORY);
+		return NULL;
+	}
+	temp->sign = 1;
+	temp->head = NULL;
+	return temp;
+}
+
+//clears given number
+void longNum_clear(number **num)
+{
+	intList_delete(&(*num)->head);
+	(*num)->sign = 1;
+	return;
+}
+
+//deletes given number
+void longNum_delete(number **num)
+{
+	longNum_clear(num);
+	free(*num);
+	return;
+}
+
+//reads digits of number 
+void longNum_read(number **num, char first_digit, int *ok)
+{
+	char digit;
+
+	digit = first_digit;
+	if (digit == '-') 
+		(*num)->sign = -1;
+	else if (digit < '0' || digit > '9') 
+	{
+		while((int)digit != 10) 
+			scanf("%c", &digit);
+		(*num)->sign = 0xDEAD;
 		return;
 	}
-	while (temp != NULL)
+	else 
+		intList_push(&(*num)->head, (int)digit - (int)('0'));
+	while (1)
 	{
-		printf("%d", temp->value);
-		temp = temp->next;
+		digit = getchar();
+		if (digit < ('0') || digit > ('9'))
+		{
+			if ((int)digit == 10 || digit == ' ' || (int)digit == EOF)
+			{
+				if ((int)digit == 10 || (int)digit == EOF)
+					*ok = 1;
+				break;
+			}
+			else 
+			{
+				while((int)digit != 10) 
+					scanf("%c", &digit);
+				(*num)->sign = 0xDEAD;
+				return;
+			}
+		}
+		intList_push(&(*num)->head, (int)digit - (int)('0'));
 	}
 	return;
 }
 
-//adds new element at the head of list
-void intList_push(intList_node **head, int data)
+//deletes leading zeroes in number
+void longNum_delete_leading_zeroes(number **num)
 {
-	intList_node *temp = (intList_node*) malloc(sizeof(intList_node));
-	
-	if (!temp) 
+	while(((*num)->head)->value == 0) 
 	{
-		error(NOT_ENOUGHT_MEMORY);
-		return;
+		intList_clear_first(&(*num)->head, 0);
+		if ((*num)->head == NULL) 
+		{
+			intList_push(&(*num)->head, 0);
+			break;
+		}
 	}
-	temp->value = data;
-	temp->next = *head;
-	*head = temp;
+	return;
+}
+
+//reverses all digits in number
+void longNum_reverse(number **num)
+{
+	intList_node *result = NULL;
+	intList_node *temp = (*num)->head;
+	int sign = (*num)->sign;
+
+	while(temp != NULL)
+	{
+		intList_push(&result, temp->value);
+		temp = temp->next;
+	}
+	longNum_clear(num);
+	(*num)->head = result;
+	(*num)->sign = sign;
 	return;
 }
