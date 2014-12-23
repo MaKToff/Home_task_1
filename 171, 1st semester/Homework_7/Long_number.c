@@ -60,12 +60,12 @@ void longNum_read(number **num, char first_digit, int *ok)
 		intList_push(&(*num)->head, (int)digit - (int)('0'));
 	while (1)
 	{
-		scanf("%c", &digit);
+		digit = getchar();
 		if (digit < ('0') || digit > ('9'))
 		{
-			if ((int)digit == 10 || digit == ' ')
+			if ((int)digit == 10 || digit == ' ' || (int)digit == EOF)
 			{
-				if ((int)digit == 10)
+				if ((int)digit == 10 || (int)digit == EOF)
 					*ok = 1;
 				break;
 			}
