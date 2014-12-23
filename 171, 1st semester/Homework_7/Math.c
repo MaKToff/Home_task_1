@@ -221,7 +221,7 @@ void longNum_divide(number **num1, number **num2, number **result)
 	number *temp1Sub = longNum_init();
 	number *temp2Sub = *num2;
 	number *tempResSub = longNum_init();
-	int digit = 0, tempDigit = 0, less = 0, current = 0;
+	int digit = 0, tempDigit = 0, less = 0, current = 0, mod0 = 0;
 
 	longNum_reverse(&temp1Div);
 	temp1 = temp1Div->head;
@@ -252,6 +252,23 @@ void longNum_divide(number **num1, number **num2, number **result)
 		}
 		temp1 = temp1->next;
 		intList_push(&(*result)->head, current);
+	}
+	if (intList_size(&temp1Sub->head) == 1 && temp1Sub->head->value == 0)
+		mod0 = 1;
+	if ((*num1)->sign == -1 && !mod0)
+	{
+		longNum_clear(&temp1Sub);
+		temp = (*result)->head;
+		while(temp != NULL)
+		{
+			tempDigit = (int)*(&temp->value);
+			intList_push(&temp1Sub->head, tempDigit);
+			temp = temp->next;
+		}
+		temp2Sub = longNum_init();
+		intList_push(&temp2Sub->head, 1);
+		longNum_clear(result);
+		longNum_sum(&temp1Sub, &temp2Sub, result);
 	}
 	longNum_reverse(&(*result));
 	longNum_delete_leading_zeroes(result);
