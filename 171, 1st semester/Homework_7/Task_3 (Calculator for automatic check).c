@@ -14,8 +14,9 @@ Author: Mikhail Kita, group 171
 int calc_start(stack_node **stack_head, number **value, number **num1, number **num2, number **result, char *trash)
 {
 	intList_node *temp = NULL;
+	intList_node *tempRev = NULL;
 	char operation = '\0', first_digit = '\0';
-	int i = 0, ok = 0;
+	int i = 0, ok = 0, digit = 0;
 
 	while((first_digit = getchar()) != EOF)
 	{
@@ -32,13 +33,16 @@ int calc_start(stack_node **stack_head, number **value, number **num1, number **
 				return 1;
 			}
 			temp = (*stack_head)->value->head;
-			printf("[");
+			while(temp != NULL)
+			{
+				digit = (int)*(&temp->value);
+				intList_push(&tempRev, digit);
+				temp = temp->next;
+			}
 			if ((*stack_head)->value->sign == -1)
 				printf("-");
-			intList_print(&temp);
-			printf("]\n");
-			if ((int)*trash == 10) //if newline was introduced
-				break;
+			intList_print(&tempRev);
+			printf("\n");
 		}
 
 		else if (first_digit == '+' || first_digit == '*' || first_digit == '/')
