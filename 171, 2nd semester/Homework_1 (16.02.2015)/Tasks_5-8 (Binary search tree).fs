@@ -1,6 +1,6 @@
 (*
 Задания 5 - 8
-===============
+====================
 Tasks 5 - 8
 
 Author: Mikhail Kita, group 171
@@ -25,20 +25,16 @@ let rec add value tree =
 //the 7th task
 
 //the smallest node on the right side with not more than 1 child
-let rec goodNode ok tree = 
+let rec goodNode tree = 
     match tree with
     | Null                       -> 0 //because of that can appear problems with '0' :(
                                       //but this situation is impossible :)
     | Node (left, center, right) ->
-        if left = Null || ok = 1      //'ok = 1' means that on the right side from node,  
-        then                          // which we want to delete, there is no any nodes.
-            center
+        if left = Null
+        then
+            center //this is the appropriate node
         else
-            if left <> Null
-            then
-                goodNode ok left
-            else
-                goodNode ok right
+            goodNode left
 
 let rec remove value tree =
     match tree with
@@ -52,21 +48,17 @@ let rec remove value tree =
             then 
                 Node (left, center, remove value right)
             else //value = center
-                let target = 
-                    if right <> Null 
-                    then 
-                        goodNode 0 right //function will return appropriate node on the right side
-                    else
-                        goodNode 1 left  //function will return the first node on the left side 
                 if (left = Null && right = Null) //this is the leaf
                 then
                     Null
                 else
                     if right <> Null
                     then 
-                        Node (left, target, remove target right)
+                        Node (left, goodNode right, remove (goodNode right) right)
                     else
-                        Node (remove target left, target, right)
+                        match left with
+                        | Null                                -> Null
+                        | Node (newLeft, newCenter, newRight) -> Node (newLeft, newCenter, newRight)
 
 
 //the 8th task
