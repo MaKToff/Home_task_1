@@ -12,6 +12,10 @@
 7. Удаление из двоичного дерева поиска (4 балла).
 8. LCR, LRC, CLR печать двоичного дерева поиска (4 балла).
 
+Время на выполнения проекта
+* Ожидаемое: 7ч
+* Реальное: 10ч
+
 ______________________________
 
 The first homework (of 16 February):
@@ -24,3 +28,7 @@ The first homework (of 16 February):
 6. Insertion to a binary search tree (2 points).
 7. Removing from a binary search tree (4 points).
 8. LCR, LRC, CLR - printing of a binary search tree (4 points).
+
+Time on implementation of project
+* Expected: 7h
+* Real: 10h
