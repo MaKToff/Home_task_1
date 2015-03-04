@@ -1,6 +1,5 @@
 ﻿(*
-Задания 1 - 4
-==============
+Homework 1 (16.02.2015)
 Tasks 1 - 4
 
 Author: Mikhail Kita, group 171
