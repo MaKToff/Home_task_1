@@ -23,11 +23,11 @@ let main argv =
     printf "Now we reverse it:\n %A\n\n" reverseExample
 
     //the third task
-    let listFilter = fold (fun x y -> if (y % 2 = 0) then y :: x else x) [] reverseExample
+    let listFilter = fold (fun x y -> if (y % 2 = 0) then x @ [y] else x) [] example
     printf "Filter for even elements:\n %A\n\n" listFilter
 
     //the 4th task
-    let listMap = fold (fun x y -> (y + 1) :: x) [] reverseExample
+    let listMap = fold (fun x y -> x @ [y + 1]) [] example
     printf "Map (x -> x + 1):\n %A\n\n" listMap
 
     //the 5th task

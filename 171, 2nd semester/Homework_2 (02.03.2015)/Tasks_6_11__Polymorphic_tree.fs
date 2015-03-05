@@ -22,9 +22,16 @@ let rec fold f value tree =
     match tree with
     | Null                       -> value
     | Node (left, center, right) ->
-        let temp = f center value       //firstly we apply function to center
+        let temp = f value center       //firstly we apply function to center
         fold f (fold f temp left) right //then we apply it to left part and after that - to right part
 
+
+type Option<'A> = None | Some of 'A
+
+let minElem arg1 arg2 =
+    match arg1 with
+    | None       -> Some (arg2)
+    | Some value -> Some (min value arg2)
 
 let rec insert value tree =
     match tree with
@@ -51,11 +58,10 @@ let main argv =
     printf "Sum of all nodes in example: %d\n\n" sum
 
     //the 10th task
-    let maximum = fold max 0 example //'maximum' will always not less than minimum element in a tree 
-    let minimum = fold min maximum example
-    printf "Minimun node in example: %d\n\n" minimum
-
+    let m = fold minElem None example
+    printf "Minimun node in example: %A\n\n" m
+    
     //the 11th task
-    let copyExample = fold (fun x y -> insert x y) Null example
+    let copyExample = fold (fun x y -> insert y x) Null example
     printf "Copy of example:\n%A\n" copyExample
     0
