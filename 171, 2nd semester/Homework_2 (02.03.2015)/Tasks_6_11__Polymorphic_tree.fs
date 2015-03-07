@@ -5,11 +5,11 @@ Tasks 6 - 11
 Author: Mikhail Kita, group 171
 *)
 
-//the 6th task
+//the 14th task
 type Tree<'A> = Null | Node of Tree<'A> * ('A) * Tree<'A>
 
 
-//the 7th task
+//the 15th task
 let rec map f tree =
     match tree with
     | Null                       -> Null 
@@ -17,7 +17,7 @@ let rec map f tree =
         Node (map f left, f center, map f right)
 
 
-//the 8th task
+//the 16th task
 let rec fold f value tree = 
     match tree with
     | Null                       -> value
@@ -26,13 +26,20 @@ let rec fold f value tree =
         fold f (fold f temp left) right //then we apply it to left part and after that - to right part
 
 
-type Option<'A> = None | Some of 'A
+//the 17th task
+let rec sumNodes tree = fold (+) 0 tree 
 
+
+//the 18th task
 let minElem arg1 arg2 =
     match arg1 with
     | None       -> Some (arg2)
     | Some value -> Some (min value arg2)
 
+let minNode tree = fold minElem None tree
+
+
+//the 19th task
 let rec insert value tree =
     match tree with
     | Null                       -> Node (Null, value, Null)
@@ -43,25 +50,86 @@ let rec insert value tree =
         else 
             Node (left, center, insert value right)
 
+let copy tree = fold (fun x y -> insert y x) Null tree
+
+
+let optionToInt value = 
+    match value with
+    | None     -> 0
+    | Some arg -> arg
+
+let rec remove value tree =
+    match tree with
+    | Null                       -> Null
+    | Node (Null, center, Null)  -> Null
+    | Node (left, center, right) ->
+        if value = center
+        then
+            match right with
+            | Null  -> left
+            | right -> 
+                let goodNode = optionToInt (minNode right)
+                Node (left, goodNode, remove goodNode right)
+        else
+            if value < center
+            then
+                Node (remove value left, center, right)
+            else
+                Node (left, center, remove value right)
+
+let rec printLCR tree =
+    match tree with
+    | Null                       -> printf ""
+    | Node (left, center, right) -> 
+        printLCR left
+        printf "%A " center
+        printLCR right
+
+let rec printLRC tree =
+    match tree with
+    | Null                       -> printf ""
+    | Node (left, center, right) -> 
+        printLRC left
+        printLRC right
+        printf "%A " center
+
+let rec printCLR tree =
+    match tree with
+    | Null                       -> printf ""
+    | Node (left, center, right) -> 
+        printf "%A " center
+        printCLR left
+        printCLR right
+
+let printTree tree =
+    printf "%A\n" tree
+    printf "\nCLR: "; printCLR tree; 
+    printf "\nLRC: "; printLRC tree; 
+    printf "\nLCR: "; printLCR tree;
+    printf "\n===\n\n"
+
 [<EntryPoint>]
 let main argv =
-    let example = (Node (Node (Null, 2, Node (Null, 4, Null)), 5, Node (Node (Null, 6, Null), 8, Node (Null, 9, Null))))
-    printf "Example:\n%A\n\n" example
+    let mutable example = (Node (Node (Null, 2, Null), 5, Node (Null, 8, Null)))
+    example <- insert 9 example
+    example <- insert 6 example
+    example <- insert 4 example
+    printf "Example:\n"
+    printTree example
     
     let newTree = map (fun x -> x + 1) example
     printf "Map (x -> x + 1):\n%A\n\n" newTree
     
-    //NB: tasks 9-11 are examples of polymorphic fold for tree
-
-    //the 9th task
-    let sum = fold (+) 0 example
+    let sum = sumNodes example
     printf "Sum of all nodes in example: %d\n\n" sum
 
-    //the 10th task
-    let m = fold minElem None example
-    printf "Minimun node in example: %A\n\n" m
+    let m = minNode example
+    printf "Minimum node in example: %A\n\n" (optionToInt m)
     
-    //the 11th task
-    let copyExample = fold (fun x y -> insert y x) Null example
-    printf "Copy of example:\n%A\n" copyExample
+    let copyExample = copy example
+    printTree copyExample
+
+    example <- remove 5 example
+    printf "Now we remove '5':\n"
+    printTree example
     0
