@@ -90,46 +90,72 @@ type Computer (number, OS) =
 
         member this.number = number
         member this.OS = OS
-        member this.isInfected = infected
+        member this.isInfected () = infected
         
         member this.infect (probability) = 
             if probability <= infectionProb (OS) then infected <- true
 
         member this.info () = 
-            if infected then printfn "%d. Infected" number 
-            else printfn "%d. Not infected" number
+            if infected then printfn "%d: Infected" number 
+            else printfn "%d: Not infected" number
     end
 
-type LocalNetwork (OSList : string list, label : bool array, list : (int list) array) =
+type ComputerGraph (OSList : string list, labels : bool array, aList : (int list) array) =
     class
-        let mutable move = 0
         let n = OSList.Length
         let comp = [|for i in [0 .. n - 1] -> new Computer(i, OSList.[i])|]
 
+        interface ILabeledGraph<Computer, bool> with
+            member this.nodes = comp
+            member this.nodesNumber = n
+            member this.hasEdge node1 node2 =
+                List.exists (fun x -> x = node2.number) aList.[node1.number]
+            
+            member this.labels = labels
+    end
+
+type LocalNetwork (graph : ILabeledGraph<Computer, bool>) =
+    class
+        let mutable move = 0
+        let n = graph.nodesNumber - 1
+
         do
-            for i = 0 to n - 1 do
-                if label.[i] then comp.[i].infect(0.0)
+            for i = 0 to n do
+                if graph.labels.[i] then graph.nodes.[i].infect(0.0)
 
         member this.infectedNumber () =
             let mutable answer = 0
-            for i in comp do
-                if i.isInfected then answer <- answer + 1
+            for i in graph.nodes do
+                if i.isInfected() then answer <- answer + 1
             answer
 
         member this.status () =
-            printf "Move: %d\nStatus:\n" move 
-            for i in comp do i.info()
-            printf "\n\n"
-            match System.Console.ReadKey().Key with
-            | _ -> ()
+            printf "\n\nMove: %d\nStatus:\n" move
+            let c = [|for i in graph.nodes -> if i.isInfected() then '#' else ' '|]
+            printf "
+            (1. Windows)%c -- (2. FreeBSD)%c -- (3. OS X   )%c
+             |                |
+             |                |
+            (0. Linux  )%c -- (4. Linux  )%c -- (5. Windows)%c
+            
+            
+            (6. Linux  )%c -- (7. Windows)%c
+             |                |
+             |                |
+            (8. OS X   )%c -- (9. FreeBSD)%c
+            \n\n" c.[0] c.[1] c.[2] c.[3] c.[4] c.[5] c.[6] c.[7] c.[8] c.[9]
+            for i in graph.nodes do i.info()
+            printf "\nPress any key to continue . . . "
+            match System.Console.ReadKey().Key with | _ -> ()
 
         member this.start () =
             move <- move + 1
-            let inf = Array.filter (fun i -> comp.[i].isInfected) [|0 .. n - 1|]
+            let inf = Array.filter (fun i -> graph.nodes.[i].isInfected()) [|0 .. n|]
             for i in inf do
-                for j in list.[i] do
-                    let rand = System.Random().NextDouble()
-                    comp.[j].infect(rand)
+                for j = 0 to n do
+                    if graph.hasEdge graph.nodes.[i] graph.nodes.[j] then
+                        let rand = System.Random().NextDouble()
+                        graph.nodes.[j].infect(rand)
     end
 
 
@@ -152,6 +178,14 @@ let main argv =
     let mgr = new MatrixGraph<int> (example, matrix)
     let lgr = new ListGraph<int> (example, arrayOfLists)
     
+    printfn "Graph:
+
+    (1) ← (2)
+     ↓     ↑
+    (5) ← (4) ← (8)
+           ↓     ↓
+          (9) ↔ (3)
+    "
     printf "Nodes which available from node '4' (using adjacency matrix):\n"
     printf "%A\n\n" (availableFrom mgr 4)
     printf "Nodes which available from node '4' (using adjacency list):\n"
@@ -163,15 +197,22 @@ let main argv =
     printf "%A\n\n\n" (haveAccessTo lgr 5)
 
 
-    let OSList = [ "Linux"; "Windows"; "FreeBSD"; "OS X"; "Linux"; "Windows"; 
-        "Linux"; "Windows"; "OS X" ]
+    let OSList = 
+        [ "Linux"; "Windows"; "FreeBSD"; "OS X"; "Linux"; "Windows"; 
+            "Linux"; "Windows"; "OS X"; "FreeBSD"]
     
-    let labels = [| false; true; false; false; false; false; false; true; false |]
-    let aList = [| [1;]; [0; 2;]; [1; 3; 4;]; [2;]; [2; 5;]; [4;]; [7; 8;]; [6;]; [6;] |]
-    let network = new LocalNetwork (OSList, labels, aList)
+    let labels = [| fls; true; fls; fls; fls; fls; fls; true; fls; fls |]
+    let aList = 
+        [| [1; 4;]; [0; 2;]; [1; 3; 4;]; [2;]; [0; 2; 5;]; [4;]; 
+            [7; 8;]; [6; 9;]; [6; 9;]; [7; 8;]; |]
     
-    printf "Demonstration of work of local network\n\n"
-    printf "== Press any key to watch next move ==\n\n"
+    let graph = new ComputerGraph (OSList, labels, aList)
+    let network = new LocalNetwork (graph)
+    
+    printf "Press any key to continue . . . "
+    match System.Console.ReadKey().Key with | _ -> ()
+    
+    printf "\n\n\nDemonstration of work of local network"
     network.status()
     while network.infectedNumber() < OSList.Length do
         network.start()
