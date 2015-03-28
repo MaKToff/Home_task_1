@@ -244,25 +244,40 @@ type LocalNetwork (graph : ILabeledGraph<Computer, bool>) =
 let OSList = 
     [ "Linux"; "Windows"; "FreeBSD"; "OS X"; "Linux"; "Windows"; 
         "Linux"; "Windows"; "OS X"; "FreeBSD"]
-    
-let labels = [| fls; true; fls; fls; fls; fls; fls; true; fls; fls |]
-let aList = 
-    [| [1; 4;]; [0; 2;]; [1; 3; 4;]; [2;]; [0; 2; 5;]; [4;]; 
-        [7; 8;]; [6; 9;]; [6; 9;]; [7; 8;]; |]
 
 [<TestCase ( 1.0, Result =  2)>] //probability of infection = 0
 [<TestCase (-1.0, Result = 10)>] //probability of infection = 1
-let ``Test 01 for local network`` correction =
+let ``Test 01: branched local network`` correction =
+    let labels = [| fls; true; fls; fls; fls; fls; fls; true; fls; fls |]
+    let aList = 
+        [| [1; 4;]; [0; 2;]; [1; 3; 4;]; [2;]; [0; 2; 5;]; [4;]; 
+            [7; 8;]; [6; 9;]; [6; 9;]; [7; 8;]; |]
+    
     let graph = new ComputerGraph (OSList, labels, aList) :> ILabeledGraph<Computer, bool>
     let network = new LocalNetwork (graph)
     let mutable n = 0
 
     if correction = -1.0 then n <- 2 else n <- 10000
     for i = 0 to n do 
+        network.start(correction)
+    network.infectedNumber
+
+[<TestCase ( 1.0, Result =  1)>] //probability of infection = 0
+[<TestCase (-1.0, Result = 10)>] //probability of infection = 1
+let ``Test 02: linear local network`` correction =
+    let labels = [| true; fls; fls; fls; fls; fls; fls; fls; fls; fls |]
+    let aList = [| [1;]; [2;]; [3;]; [4;]; [5;]; [6;]; [7;]; [8;]; [9;]; []; |]
+    
+    let graph = new ComputerGraph (OSList, labels, aList) :> ILabeledGraph<Computer, bool>
+    let network = new LocalNetwork (graph)
+    let mutable n = 0
+
+    if correction = -1.0 then n <- 9 else n <- 10000
+    for i = 0 to n do 
         network.start(correction) 
     network.infectedNumber
 
-//Tests are cover 81.72 % of code
+//Tests are cover 83.46 % of code
 
 [<EntryPoint>]
 let main argv =
