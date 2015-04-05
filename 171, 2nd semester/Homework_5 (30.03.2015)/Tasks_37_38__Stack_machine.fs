@@ -35,9 +35,9 @@ type Stack<'A when 'A: equality> () =
 //the 37th task
 
 //splits input string to tokens and converts them to expression in reverse polish notation
-let convert () =
-    use inputStream = new StreamReader("test.in")
-    use outputStream = new StreamWriter("test.out")
+let convert (inputFile : string) (outputFile : string) =
+    use inputStream = new StreamReader(inputFile)
+    use outputStream = new StreamWriter(outputFile)
     let str = inputStream.ReadToEnd()
 
     //returns priority of operator
@@ -119,9 +119,9 @@ let stringToFloat (str : string) =
     if negative then -temp else temp
 
 //computes value of expression
-let compute () =
-    use inputStream = new StreamReader("test.in")
-    use outputStream = new StreamWriter("test.out")
+let compute (inputFile : string) (outputFile : string) =
+    use inputStream = new StreamReader(inputFile)
+    use outputStream = new StreamWriter(outputFile)
     
     //calculates the result
     let stack = new Stack<float>()
@@ -142,32 +142,55 @@ let compute () =
                 | "/" -> stack.push(b / a)
                 | "%" -> stack.push(b % a)
                 | "^" ->
-                    let rec pow elem p =
-                        match p with
-                        | 0 -> 1.0
-                        | 1 -> elem
-                        | p -> elem * (pow elem (p - 1))
-                    if a >= 0.0 then stack.push(pow b (System.Convert.ToInt32(a)))
-                    else stack.push(1.0 / (pow b (-System.Convert.ToInt32(a))))
+                    if a >= 0.0 then 
+                        stack.push(pown b (System.Convert.ToInt32(a)))
+                    else stack.push(1.0 / (pown b (-System.Convert.ToInt32(a))))
                 | _   -> failwith "Incorrect operator"
     
     outputStream.WriteLine(stack.pop())
 
 
 //writes string into input file
-let write (str : string) =
-    use stream = new StreamWriter("test.in")
+let write (str : string) (file : string) =
+    use stream = new StreamWriter(file)
     stream.WriteLine(str)
 
 //reads string from output file
-let read () =
-    use stream = new StreamReader("test.out")
+let read (file : string) =
+    use stream = new StreamReader(file)
     stream.ReadToEnd()
+
+[<TestCase ("5 + (-5)", Result = "5 -5 +")>]
+[<TestCase ("555 % 10", Result = "555 10 %")>]
+[<TestCase ("1 ^ 10000", Result = "1 10000 ^")>]
+[<TestCase ("2 + 2 * 2", Result = "2 2 2 * +")>]
+[<TestCase ("3 ^ 1 ^ 2", Result = "3 1 2 ^ ^")>]
+[<TestCase ("1 - 2 - 3", Result = "1 2 - 3 -")>]
+[<TestCase ("7 * (6 + 5)", Result = "7 6 5 + *")>]
+[<TestCase ("((1 + 2) * 3) ^ 4", Result = "1 2 + 3 * 4 ^")>]
+[<TestCase ("((1 + 2) * 3) ^ (-1)", Result = "1 2 + 3 * -1 ^")>]
+[<TestCase ("3 + 4 * 2 / (1 - 5) ^ 2", Result = "3 4 2 * 1 5 - 2 ^ / +")>]
+[<TestCase ("7 + 6 - 5 * 4 / 3 % 2 ^ 1", Result = "7 6 + 5 4 * 3 / 2 1 ^ % -")>]
+[<TestCase ("7 + 6 - 5 * (4 / (3 % 2 ^ 1))", Result = "7 6 + 5 4 3 2 1 ^ % / * -")>]
+let ``Test for 37th task`` (expression : string) =
+    let inputFile = "test.in"
+    let outputFile = "test.out"
+    write expression inputFile
+    convert inputFile outputFile
+    let mutable answer = ""
+    for c in (read(outputFile)) do
+        match c with
+        | '\r' -> answer <- answer + " "
+        | '\n' -> ()
+        | char -> answer <- answer + char.ToString()
+    answer.TrimEnd(' ')
 
 [<TestCase ("5 + (-5)", Result = "0")>]
 [<TestCase ("555 % 10", Result = "5")>]
 [<TestCase ("2 + 2 * 2", Result = "6")>]
 [<TestCase ("1 ^ 10000", Result = "1")>]
+[<TestCase ("3 ^ 1 ^ 2", Result = "3")>]
+[<TestCase ("1 - 2 - 3", Result = "-4")>]
 [<TestCase ("1 + (-101)", Result = "-100")>]
 [<TestCase ("123456789 ^ 0", Result = "1")>]
 [<TestCase ("((1 + 2) * 3) ^ 4", Result = "6561")>]
@@ -179,14 +202,16 @@ let read () =
 [<TestCase ("7 + 6 - 5 * 4 / 3 % 2 ^ 1", Result = "12,3333333333333")>]
 [<TestCase ("(34 + 81) * 59 / 134 - (35 - 31) ^ 3", Result = "-13,365671641791")>]
 [<TestCase ("110 - (73 / 56 * 98 - 465 % 23) + 121 / (45 - 34) ^ 2", Result = "-11,75")>]
-let ``Test`` (expression : string) =
-    write(expression)
-    convert()
-    write(read())
-    compute()
-    (read()).TrimEnd('\r', '\n')
+let ``Test for 38th task`` (expression : string) =
+    let inputFile = "test.in"
+    let outputFile = "test.out"
+    write expression inputFile
+    convert inputFile outputFile
+    write (read(outputFile)) inputFile
+    compute inputFile outputFile
+    (read(outputFile)).TrimEnd('\r', '\n')
 
-//Tests are cover 93.47% of code
+//Tests are cover 93.07% of code
 
 [<EntryPoint>]
 let main argv =
