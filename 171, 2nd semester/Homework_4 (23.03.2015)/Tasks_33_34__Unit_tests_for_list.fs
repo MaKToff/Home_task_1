@@ -225,6 +225,235 @@ type ArrayList<'A when 'A: equality> () =
     end
 
 
+//the 33rd task
+let list = new ADTList<int> () :> IList<int>
+
+[<Test>]
+let ``Test 01-ADTList: is_empty`` () = 
+    list.push_back(1)
+    Assert.AreEqual(false, list.is_empty())
+    ignore(list.del_back())
+    Assert.AreEqual(true, list.is_empty())
+
+[<Test>]
+let ``Test 02-ADTList: top`` () = 
+    list.push_back(1)
+    Assert.AreEqual(Some 1, list.top())
+    ignore(list.del_back())
+    Assert.AreEqual(None, list.top())
+
+[<TestCase (3, Result = "[ 3; ]")>]
+[<TestCase (2, Result = "[ 2; 3; ]")>]
+[<TestCase (1, Result = "[ 1; 2; 3; ]")>]
+let ``Test 03-ADTList: push_front`` elem =
+    list.push_front(elem)
+    list.ToString()
+
+[<TestCase (4, Result = "[ 1; 2; 3; 4; ]")>]
+[<TestCase (5, Result = "[ 1; 2; 3; 4; 5; ]")>]
+[<TestCase (6, Result = "[ 1; 2; 3; 4; 5; 6; ]")>]
+let ``Test 04-ADTList: push_back`` elem =
+    list.push_back(elem)
+    list.ToString()
+
+[<TestCase (7,   3, Result = "[ 1; 2; 3; 7; 4; 5; 6; ]")>]
+[<TestCase (8,   0, Result = "[ 8; 1; 2; 3; 7; 4; 5; 6; ]")>]
+[<TestCase (9,   8, Result = "[ 8; 1; 2; 3; 7; 4; 5; 6; 9; ]")>]
+[<TestCase (10, 42, Result = "[ 8; 1; 2; 3; 7; 4; 5; 6; 9; ]")>]
+let ``Test 05-ADTList: push_to`` elem pos =
+    ignore(list.push_to elem pos)
+    list.ToString()
+
+[<TestCase (Result = "[ 1; 2; 3; 7; 4; 5; 6; 9; ]")>]
+[<TestCase (Result = "[ 2; 3; 7; 4; 5; 6; 9; ]")>]
+let ``Test 06.1-ADTList: del_front`` () =
+    ignore(list.del_front())
+    list.ToString()
+
+[<Test>]
+let ``Test 06.2-ADTList: del_front from empty list`` () =
+    let list' = new ADTList<int> () :> IList<int>
+    list'.push_back(1)
+    ignore(list'.del_front())
+    Assert.AreEqual("[ ]", list'.ToString())
+    ignore(list'.del_front())
+    Assert.AreEqual("[ ]", list'.ToString())
+
+[<TestCase (Result = "[ 2; 3; 7; 4; 5; 6; ]")>]
+[<TestCase (Result = "[ 2; 3; 7; 4; 5; ]")>]
+let ``Test 07.1-ADTList: del_back`` () =
+    ignore(list.del_back())
+    list.ToString()
+
+[<Test>]
+let ``Test 07.2-ADTList: del_back from empty list`` () =
+    let list' = new ADTList<int> () :> IList<int>
+    list'.push_back(1)
+    ignore(list'.del_back())
+    Assert.AreEqual("[ ]", list'.ToString())
+    ignore(list'.del_back())
+    Assert.AreEqual("[ ]", list'.ToString())
+
+[<TestCase ( 3, Result = "[ 2; 3; 7; 5; ]")>]
+[<TestCase ( 0, Result = "[ 3; 7; 5; ]")>]
+[<TestCase ( 2, Result = "[ 3; 7; ]")>]
+[<TestCase (42, Result = "[ 3; 7; ]")>]
+let ``Test 08.1-ADTList: del_from`` pos =
+    ignore(list.del_from(pos))
+    list.ToString()
+
+[<Test>]
+let ``Test 08.2-ADTList: del_from empty list`` () =
+    let list' = new ADTList<int> () :> IList<int>
+    list'.push_back(1)
+    ignore(list'.del_from(0))
+    Assert.AreEqual("[ ]", list'.ToString())
+    ignore(list'.del_from(0))
+    Assert.AreEqual("[ ]", list'.ToString())
+
+[<Test>]
+let ``Test 09-ADTList: find`` () =
+    Assert.AreEqual(Some 7, list.find(fun x -> x = 7))
+    Assert.AreEqual(Some 3, list.find(fun x -> x = 3))
+    Assert.AreEqual(None, list.find(fun x -> x = 42))
+    Assert.AreEqual(None, list.find(fun x -> x % 2 = 0))
+
+[<Test>]
+let ``Test 10-ADTList: concat``() =
+    let newADTList = new ADTList<int> () :> IList<int>
+    let newArrayList = new ArrayList<int> () :> IList<int>
+    
+    ignore(list.concat newADTList)
+    Assert.AreEqual("[ 3; 7; ]", list.ToString())
+    ignore(list.concat newArrayList)
+    Assert.AreEqual("[ 3; 7; ]", list.ToString())
+    
+    newADTList.push_back(2)
+    newADTList.push_back(4)
+    ignore(list.concat newADTList)
+    Assert.AreEqual("[ 3; 7; 2; 4; ]", list.ToString())
+
+    newArrayList.push_back(5)
+    newArrayList.push_back(9)
+    ignore(list.concat newArrayList)
+    Assert.AreEqual("[ 3; 7; 2; 4; 5; 9; ]", list.ToString())
+
+
+//the 34th task
+let newList = new ArrayList<int> () :> IList<int>
+
+[<Test>]
+let ``Test 01-ArrayList: is_empty`` () = 
+    newList.push_back(1)
+    Assert.AreEqual(false, newList.is_empty())
+    ignore(newList.del_back())
+    Assert.AreEqual(true, newList.is_empty())
+
+[<Test>]
+let ``Test 02-ArrayList: top`` () = 
+    newList.push_back(1)
+    Assert.AreEqual(Some 1, newList.top())
+    ignore(newList.del_back())
+    Assert.AreEqual(None, newList.top())
+
+[<TestCase (3, Result = "[ 3; ]")>]
+[<TestCase (2, Result = "[ 2; 3; ]")>]
+[<TestCase (1, Result = "[ 1; 2; 3; ]")>]
+let ``Test 03-ArrayList: push_front`` elem =
+    newList.push_front(elem)
+    newList.ToString()
+
+[<TestCase (4, Result = "[ 1; 2; 3; 4; ]")>]
+[<TestCase (5, Result = "[ 1; 2; 3; 4; 5; ]")>]
+[<TestCase (6, Result = "[ 1; 2; 3; 4; 5; 6; ]")>]
+let ``Test 04-ArrayList: push_back`` elem =
+    newList.push_back(elem)
+    newList.ToString()
+
+[<TestCase (7,   3, Result = "[ 1; 2; 3; 7; 4; 5; 6; ]")>]
+[<TestCase (8,   0, Result = "[ 8; 1; 2; 3; 7; 4; 5; 6; ]")>]
+[<TestCase (9,   8, Result = "[ 8; 1; 2; 3; 7; 4; 5; 6; 9; ]")>]
+[<TestCase (10, 42, Result = "[ 8; 1; 2; 3; 7; 4; 5; 6; 9; ]")>]
+let ``Test 05-ArrayList: push_to`` elem pos =
+    ignore(newList.push_to elem pos)
+    newList.ToString()
+
+[<TestCase (Result = "[ 1; 2; 3; 7; 4; 5; 6; 9; ]")>]
+[<TestCase (Result = "[ 2; 3; 7; 4; 5; 6; 9; ]")>]
+let ``Test 06.1-ArrayList: del_front`` () =
+    ignore(newList.del_front())
+    newList.ToString()
+
+[<Test>]
+let ``Test 06.2-ArrayList: del_front from empty list`` () =
+    let list' = new ArrayList<int> () :> IList<int>
+    list'.push_back(1)
+    ignore(list'.del_front())
+    Assert.AreEqual("[ ]", list'.ToString())
+    ignore(list'.del_front())
+    Assert.AreEqual("[ ]", list'.ToString())
+
+[<TestCase (Result = "[ 2; 3; 7; 4; 5; 6; ]")>]
+[<TestCase (Result = "[ 2; 3; 7; 4; 5; ]")>]
+let ``Test 07.1-ArrayList: del_back`` () =
+    ignore(newList.del_back())
+    newList.ToString()
+
+[<Test>]
+let ``Test 07.2-ArrayList: del_back from empty list`` () =
+    let list' = new ArrayList<int> () :> IList<int>
+    list'.push_back(1)
+    ignore(list'.del_back())
+    Assert.AreEqual("[ ]", list'.ToString())
+    ignore(list'.del_back())
+    Assert.AreEqual("[ ]", list'.ToString())
+
+[<TestCase ( 3, Result = "[ 2; 3; 7; 5; ]")>]
+[<TestCase ( 0, Result = "[ 3; 7; 5; ]")>]
+[<TestCase ( 2, Result = "[ 3; 7; ]")>]
+[<TestCase (42, Result = "[ 3; 7; ]")>]
+let ``Test 08.1-ArrayList: del_from`` pos =
+    ignore(newList.del_from(pos))
+    newList.ToString()
+
+[<Test>]
+let ``Test 08.2-ArrayList: del_from empty list`` () =
+    let list' = new ArrayList<int> () :> IList<int>
+    list'.push_back(1)
+    ignore(list'.del_from(0))
+    Assert.AreEqual("[ ]", list'.ToString())
+    ignore(list'.del_from(0))
+    Assert.AreEqual("[ ]", list'.ToString())
+
+[<Test>]
+let ``Test 09-ArrayList: find`` () =
+    Assert.AreEqual (Some 7, newList.find(fun x -> x = 7))
+    Assert.AreEqual (Some 3, newList.find(fun x -> x = 3))
+    Assert.AreEqual (None, newList.find(fun x -> x = 42))
+    Assert.AreEqual (None, newList.find(fun x -> x % 2 = 0))
+
+[<Test>]
+let ``Test 10-ArrayList: concat``() =
+    let newADTList = new ADTList<int> () :> IList<int>
+    let newArrayList = new ArrayList<int> () :> IList<int>
+    
+    ignore(newList.concat newADTList)
+    Assert.AreEqual ("[ 3; 7; ]", newList.ToString())
+    ignore(newList.concat newArrayList)
+    Assert.AreEqual ("[ 3; 7; ]", newList.ToString())
+    
+    newADTList.push_back(2)
+    newADTList.push_back(4)
+    ignore(newList.concat newADTList)
+    Assert.AreEqual ("[ 3; 7; 2; 4; ]", newList.ToString())
+
+    newArrayList.push_back(5)
+    newArrayList.push_back(9)
+    ignore(newList.concat newArrayList)
+    Assert.AreEqual ("[ 3; 7; 2; 4; 5; 9; ]", newList.ToString())
+
+//Tests are cover 95.29% of code
+
 [<EntryPoint>]
 let main argv =
     0
