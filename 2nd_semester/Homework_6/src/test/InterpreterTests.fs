@@ -19,7 +19,7 @@ open Program
 [<TestCase ("test4_if.in", [|7.0; 12.0;|], Result = "10000 7 100 8 777 12 ")>]
 [<TestCase ("test5_while.in", [|7.0; 3.0;|], Result = "343 ")>]
 [<TestCase ("test6_all_easy.in", [|4.0; 6.0;|], Result = "27 8 ")>]
-[<TestCase ("test7_all_hard.in", [|5.0; 8.0; 15.0; 7.0|], Result = "2 26 10 1,75 ")>]
+[<TestCase ("test7_all_hard.in", [|5.0; 8.0; 15.0; 7.0|], Result = "2 26 10 1.75 ")>]
 let ``Test for interpreter`` (file : string) (args : float array) =
     let q = new Queue<float>()
     for l in args do q.push(l)
