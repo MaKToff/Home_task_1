@@ -10,8 +10,10 @@ module Workflow
 //the 40th task
 type Builder(n : int) =
     member this.Bind (x, rest) = rest (x % n)
-    member this.Return x = x % n
+    member this.Return x =
+        if (x % n < 0) then (x % n + n) else x % n
 
+//NB: Division is not defined in ring
 let ring x = new Builder(x)
 
 
