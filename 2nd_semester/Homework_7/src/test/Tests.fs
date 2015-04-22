@@ -46,13 +46,13 @@ let ``Test for 40th task #3: return of negative number`` (n) =
 let ``Test for 41st task #1: filter`` () =
     let tree = 
         Node (Node(Node(Null, 1, Null), 2, Null), 3, Node(Null, 4, Null))
-    let t = filter (fun x -> x % 2 = 1) tree
+    let t = filter (fun x -> x % 2 = 1) Null tree
     Assert.AreEqual(Node (Node (Null, 1, Null), 3, Null), t) 
 
 [<Test>]
 let ``Test for 41st task #2: map`` () =
     let tree = Node (Node(Null, 1, Null), 2, Node(Null, 4, Null))
-    let t = map (fun x -> x * 2) tree
+    let t = map (fun x -> x * 2) Null tree
     Assert.AreEqual(Node (Node(Null, 2, Null), 4, Node(Null, 8, Null)), t)
 
 [<Test>]
@@ -80,7 +80,7 @@ let ``Test for 41st task #4: TreeBuilder.Combine`` () =
         TreeBuilder((+), 0) {
             return tree
             return! 1
-            let temp = map (fun x -> x + 1) tree
+            let temp = map (fun x -> x + 1) Null tree
             return temp
         }
     Assert.AreEqual(Node (Node(Null, 1, Node(Null, 4, Null)), 3, Null), concat)

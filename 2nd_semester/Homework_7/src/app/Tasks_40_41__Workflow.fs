@@ -63,11 +63,17 @@ let rec insert value tree =
         else 
             Node (left, center, insert value right)
 
-let filter f tree =
-    fold (fun t arg -> if (f arg) then insert arg t else t) Null tree
+let rec filter f value tree =
+    TreeBuilder((fun t arg -> if (f arg) then insert arg t else t), value) {
+        let! temp = tree
+        return filter f temp
+    }
 
-let map f tree = 
-    fold (fun t arg -> insert (f arg) t) Null tree
+let rec map f value tree =
+    TreeBuilder((fun t arg -> insert (f arg) t), value) {
+        let! temp = tree
+        return map f temp
+    }
     
 [<EntryPoint>]
 let main argv =
