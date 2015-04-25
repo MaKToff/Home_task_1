@@ -97,7 +97,7 @@ let numberButton value x y =
             | "xⁿ" | "mod" | "(" | ")" | "/" | "*" | "-" | "+" | "." -> 
                 expression <- expression + value
             
-            | "←" | "CE" ->
+            | "←" | "CE" | "pi" ->
                 if expression <> "0" then expression <- expression + value
                 else expression <- value
             
@@ -150,8 +150,6 @@ let operationButton value x y =
         | _ ->
             match value with
             | "sin" | "cos" | "tg" | "ctg" -> findCorrect value
-            | "π"   -> expression <- pi
-            | "e"   -> expression <- "2.71828182845904523536"
             | "n!"  -> expression <- tryToCompute (expression + " !")
             | "x²"  -> expression <- tryToCompute (expression + " ^ 2")
             | "x³"  -> expression <- tryToCompute (expression + " ^ 3")
@@ -171,6 +169,7 @@ let operationButton value x y =
             | "C"   -> expression <- "0"
             | "√"   -> expression <- tryToCompute ("sqrt " + expression)
             | "1/x" -> expression <- tryToCompute ("1 / " + expression)
+            | "±"   -> expression <- tryToCompute ("-1 * " + expression)
             | "="   -> expression <- tryToCompute expression
             |  _    -> 
                 if expression.Length < 60 then
@@ -178,6 +177,14 @@ let operationButton value x y =
                     | "MR"  -> 
                         if isNumber expression then expression <- memory
                         else expression <- expression + memory
+                    
+                    | "π"   -> 
+                        if isNumber expression then expression <- pi
+                        else expression <- expression + " " + pi
+                    
+                    | "e"   -> 
+                        if isNumber expression then expression <- "2.71828182845904523536"
+                        else expression <- expression + " 2.71828182845904523536"
                     
                     | "xⁿ"  -> expression <- expression + " ^ "
                     | "mod" -> expression <- expression + " % "
@@ -189,7 +196,6 @@ let operationButton value x y =
                         if not (isNumber expression) then 
                             expression <- expression + ")"
                     
-                    | "±"   -> expression <- compute("-1 * " + expression)
                     | "."   ->
                         let index = expression.IndexOf(".")
                         if index < 0 then expression <- expression + "."

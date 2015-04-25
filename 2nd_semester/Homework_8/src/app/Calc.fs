@@ -137,7 +137,7 @@ let stringToFloat (str : string) =
 //computes value of expression
 let compute expression =
     let tree = convert(expression)
-    printfn "%A" tree
+
     let computeWithPrecision value =
         if abs(value) < 1e-15 then "0" else (value).ToString()
     

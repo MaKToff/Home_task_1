@@ -6,8 +6,6 @@ open Fake
 let buildDir = "./bin/build/"
 let testDir  = "./bin/test/"
 
-let testFiles = !! "tests/*.in"
-
 Target "Clean" (fun _ -> 
     CleanDir "./bin"
 )

@@ -20,6 +20,7 @@ open Calc
 [<TestCase ("555 % 10", Result = "5")>]
 [<TestCase ("2 + 2 * 2", Result = "6")>]
 [<TestCase ("3 ^ 1 ^ 2", Result = "3")>]
+[<TestCase ("sqrt -1", Result = "NaN")>]
 [<TestCase ("2 ^ (-1)", Result = "0.5")>]
 [<TestCase ("1 - 101", Result = "-100")>]
 [<TestCase ("1 - 2 - 3", Result = "-4")>]
