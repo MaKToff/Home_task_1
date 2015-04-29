@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Calc.fs" />
+    <Compile Include="Plotter.fs" />
     <Compile Include="GUI.fs" />
     <None Include="App.config" />
   </ItemGroup>

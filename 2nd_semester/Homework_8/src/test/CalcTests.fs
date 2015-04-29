@@ -10,7 +10,7 @@ module CalcTests
 open NUnit.Framework
 open Calc
 
-[<TestCase ("5 !", Result = "120")>]
+[<TestCase ("5!", Result = "120")>]
 [<TestCase ("sin 0", Result = "0")>]
 [<TestCase ("cos 0", Result = "1")>]
 [<TestCase ("54 / 6", Result = "9")>]
@@ -27,5 +27,20 @@ open Calc
 [<TestCase ("123456789 ^ 0", Result = "1")>]
 [<TestCase ("((1 + 2) * 3) ^ 4", Result = "6561")>]
 [<TestCase ("3 + 4 * 2 / (1 - 5) ^ 2", Result = "3.5")>]
-let ``Test for calculator`` (expression : string) =
-    compute expression
+let ``Test for calculator 01`` (expression : string) =
+    tryToCompute expression
+
+
+[<TestCase ("lg x", 1000, Result = "3")>]
+[<TestCase ("sqrt x", 64, Result = "8")>]
+[<TestCase ("(sin x) ^ 2 + (cos x) ^ 2", 10, Result = "1")>]
+let ``Test for calculator 02`` (expression : string) (value : float) =
+    let dict           = new Dictionary()
+    dict.add "x" value
+    
+    let mutable result = (compute expression dict).ToString()
+    let index          = result.IndexOf(",")
+            
+    if index > 0 then
+        result <- (result.Remove(index, 1)).Insert(index, ".")
+    result

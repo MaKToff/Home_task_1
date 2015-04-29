@@ -12,13 +12,14 @@ type Tree<'A> = Null | Node of Tree<'A> * 'A * Tree<'A>
 
 exception ListIsEmpty
 exception InvalidOperation
+exception KeyNotFound
 
 //realisation of stack
 type Stack<'A when 'A: equality> () = 
     class
         let mutable (stack : List<'A>) = Nil
         
-        member this.isEmpty = (stack = Nil)
+        member this.isEmpty   = (stack = Nil)
         member this.push elem = stack <- Cons (elem, stack)
         
         member this.pop () =
@@ -34,13 +35,36 @@ type Stack<'A when 'A: equality> () =
             | Cons (elem, next) -> elem
     end
 
+//realisation of map
+type Dictionary () =
+    class
+        let mutable dictionary = Nil
+
+        let rec tryFind dict key =
+            match dict with
+            | Nil                             -> raise KeyNotFound
+            | Cons ((keyElem, valElem), next) -> 
+                if keyElem = key then valElem else tryFind next key
+
+        let rec tryAdd dict key value =
+            match dict with
+            | Nil                             -> Cons ((key, value), Nil)
+            | Cons ((keyElem, valElem), next) -> 
+                if keyElem = key then Cons ((keyElem, value), next)
+                else Cons ((keyElem, valElem), tryAdd next key value)
+
+        member this.add key value = 
+            dictionary <- tryAdd dictionary key value
+        member this.find key      = tryFind dictionary key
+    end
+
 //checks if string is number
 let isNumber (str : string) =
-    if str.[0] = '-' && str.Length = 1 || 
-        (not (str.[0] = '-' || (System.Char.IsDigit(str.[0])))) then false
+    if str.[0] = '-' && str.Length = 1 
+        || (not (str.[0] = '-' || (System.Char.IsDigit(str.[0])))) then false
         else
             let mutable answer = true
-            let mutable dot = false
+            let mutable dot    = false
             for i = 1 to str.Length - 1 do
                 if not (System.Char.IsDigit(str.[i])) then 
                     if str.[i] = '.' && not dot then dot <- true
@@ -54,54 +78,63 @@ let convert (str : string) =
     //returns priority of operator
     let priority operator =
         match operator with
-        | "+" | "-" -> 1
-        | "*" | "/" | "%" -> 2
+        | "sin" | "cos" | "tg" | "ctg" | "!" |"sqrt" | "ln" | "lg" -> 4
         | "^" -> 3
-        |  _  -> 0   
+        | "*" | "/" | "%" -> 2
+        | "+" | "-" -> 1
+        |  _  -> 0
     
     //lexical analysis of input expression
     let mutable tokens = []
-    let mutable temp = ""
+    let mutable temp   = ""
     for i = 0 to str.Length - 1 do
         match str.[i] with
+            | '-' -> 
+                if str.[i + 1] = ' ' then tokens <- List.append tokens ["-";]
+                else tokens <- List.append tokens ["-1"; "*";]
+                temp <- ""
+            
+            | '(' -> tokens <- List.append tokens ["(";]
+            
+            | ')' | '!' ->
+                if temp.Length > 0 then
+                    tokens <- List.append tokens [temp;]
+                    temp <- ""
+                tokens <- List.append tokens [str.[i].ToString();]
             | ' ' ->
                 if temp <> "" then tokens <- List.append tokens [temp;]
                 temp <- ""
-            
-            | '-' -> temp <- "-"
-            | '(' -> tokens <- List.append tokens ["(";]
-            | ')' ->
-                if temp.Length > 0 then
-                    tokens <- List.append tokens [temp;]
-                    temp <- "" 
-                tokens <- List.append tokens [")";]
             
             |  _  -> temp <- temp + str.[i].ToString()
     
     if temp.Length > 0 then tokens <- List.append tokens [temp;]
 
     //syntax analysis of input expression
-    let stack = new Stack<string>()
+    let stack  = new Stack<string>()
     let result = new Stack<Tree<string>>()
     for t in tokens do
-        if isNumber t then result.push(Node(Null, t, Null))
-        else
-            match t with
-            | "(" -> stack.push(t)
-            | ")" ->
-                while stack.top() <> "(" && (not stack.isEmpty) do
-                    result.push(Node(result.pop(), stack.pop(), result.pop()))
-                ignore(stack.pop())
+        match t with
+        | "(" -> stack.push(t)
+        | ")" ->
+            while stack.top() <> "(" && (not stack.isEmpty) do
+                if priority(stack.top()) = 4 then 
+                    result.push(Node(result.pop(), stack.pop(), Null))
+                else result.push(Node(result.pop(), stack.pop(), result.pop()))
+            ignore(stack.pop())
 
-            | "sin" | "cos" | "tg" | "ctg" | "sqrt" | "!" | "ln" | "lg" -> 
-                stack.push(t)
-               
-            | _   ->
-                while not stack.isEmpty 
-                    && (priority(stack.top()) >= priority(t) && priority(t) < 3
-                        || (priority(stack.top()) >  priority(t) && priority(t) = 3))
-                            do result.push(Node(result.pop(), stack.pop(), result.pop()))
-                stack.push(t)
+        | "sin" | "cos" | "tg" | "ctg" | "!" |"sqrt" | "ln" | "lg" -> stack.push(t)
+
+        | "+" | "-" | "*" | "/" | "^" | "%"   ->
+            while not stack.isEmpty
+                && (priority(stack.top()) >= priority(t) && priority(t) < 3
+                || priority(stack.top()) >  priority(t) && priority(t) = 3
+                || priority(stack.top()) = 4) do
+                    if not stack.isEmpty && priority(stack.top()) = 4 then
+                        result.push(Node(result.pop(), stack.pop(), Null))
+                    else result.push(Node(result.pop(), stack.pop(), result.pop()))
+            stack.push(t)
+
+        | _ -> result.push(Node(Null, t, Null))
 
     while not stack.isEmpty do 
         let temp = stack.pop()
@@ -111,76 +144,61 @@ let convert (str : string) =
         | _ -> result.push(Node(result.pop(), temp, result.pop()))
     result.pop()
 
-//converts string to float
-let stringToFloat (str : string) =
-    let charToDouble (elem : char) = 
-        System.Convert.ToDouble(System.Convert.ToInt32(elem) - 48)
-    let mutable temp = 0.0
-    let negative = 
-        match str.[0] with
-        | '-' -> true 
-        |  _  -> 
-            temp <- charToDouble(str.[0])
-            false
-    let mutable dot = false
-    let mutable t = 1.0
-
-    for i = 1 to str.Length - 1 do
-        if str.[i] = '.' || str.[i] = ',' then dot <- true
-        else 
-            if dot then 
-                t <- t * 10.0
-                temp <- temp + charToDouble(str.[i]) / t
-            else temp <- temp * 10.0 + charToDouble(str.[i]) / t
-    if negative then -temp else temp
-
 //computes value of expression
-let compute expression =
+let compute expression (context : Dictionary) =
     let tree = convert(expression)
 
     let computeWithPrecision value =
-        if abs(value) < 1e-15 then "0" else (value).ToString()
+        if abs(value) < 1e-15 then 0.0 else value
     
     //calculates the result
     let rec apply t =
         match t with
-        | Null                       -> "0"
-        | Node (Null, value, Null)   -> value
+        | Null                       -> 0.0
+        | Node (Null, value, Null)   -> 
+            if isNumber value then float (value) 
+            else context.find(value)
         | Node (left, center, right) ->
-            let a = stringToFloat(apply left)
-            let b = stringToFloat(apply right)
+            let a = apply left
+            let b = apply right
 
             //applies operator to two operands
             match center with
-            | "+" -> (a + b).ToString()
-            | "-" -> (b - a).ToString()
-            | "*" -> (a * b).ToString()
-            | "/" -> (b / a).ToString()
+            | "+" -> a + b
+            | "-" -> b - a
+            | "*" -> a * b
+            | "/" -> b / a
             | "%" -> 
-                if (b % a) < 0.0 then (b % a + a).ToString()
-                else (b % a).ToString()
+                if (b % a) < 0.0 then b % a + a else b % a
             
             | "^" ->
-                if a >= 0.0 then (pown b (System.Convert.ToInt32(a))).ToString()
-                else (1.0 / (pown b (-System.Convert.ToInt32(a)))).ToString()
+                if a >= 0.0 then b ** a else (1.0 / b ** (-a))
             
-            | "!" -> 
-                let n = System.Convert.ToInt32(a)
+            | "!" ->
                 let mutable res = 1.0
-                for i = 1 to n do res <- res * (System.Convert.ToDouble(i)) 
-                (res).ToString()
+                for i = 1 to (int a) do res <- res * (float i)
+                res
             
             | "sin"  -> computeWithPrecision (sin a)
             | "cos"  -> computeWithPrecision (cos a)
             | "tg"   -> computeWithPrecision (tan a)
             | "ctg"  -> computeWithPrecision (1.0 / (tan a))
-            | "sqrt" -> (sqrt a).ToString()
-            | "ln"   -> (log a).ToString()
-            | "lg"   -> ((log a) / (log 10.0)).ToString()
+            | "sqrt" -> sqrt a
+            | "ln"   -> log a
+            | "lg"   -> (log a) / (log 10.0)
             |  _     -> raise InvalidOperation
 
-    let mutable result = apply tree
-    let index = result.IndexOf(",")
-    if index > 0 then
-        result <- (result.Remove(index, 1)).Insert(index, ".")
-    result
+    apply tree
+
+//tries to compute value of expression
+let tryToCompute expr =
+    try
+        let dict           = new Dictionary()
+        let mutable result = (compute expr dict).ToString()
+        let index          = result.IndexOf(",")
+            
+        if index > 0 then
+            result <- (result.Remove(index, 1)).Insert(index, ".")
+        result
+    with
+    | :? ListIsEmpty | :? InvalidOperation | :? KeyNotFound -> "Error"
