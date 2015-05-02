@@ -10,6 +10,7 @@ module Program
 open System.Threading
 open Calc
 
+
 //the 46th task
 
 //finds max element in given range
@@ -94,10 +95,45 @@ let definiteIntegral expression (threadNumber : int) left right precision =
     result.Value
 
 
+//the 48th task
+
+//multiplies two matrix in given range
+let multiplicationInRange (res : int [][]) (m1 : int [][]) (m2 : int [][]) left right =
+    let n = m1.[0].Length
+    let l = m2.[0].Length
+
+    for i = left to right do
+        for j = 0 to l - 1 do
+            let mutable temp = 0
+            for k = 0 to n - 1 do
+                temp <- temp + m1.[i].[k] * m2.[k].[j]
+            res.[i].[j] <- temp
+
+//multiplies two matrix
+let matrixMultiplication (matrix1 : int [][]) (matrix2 : int [][]) threadNumber =
+    let n    = matrix1.Length
+    let step = n / threadNumber
+    let res  = Array.init (matrix1.Length) (fun i ->
+        Array.init (matrix2.[0].Length) (fun j -> 0))
+
+    let threadArray = Array.init threadNumber (fun i ->
+        new Thread(ThreadStart(fun _ ->
+            multiplicationInRange res matrix1 matrix2 (i * step) ((i + 1) * step - 1)
+        ))
+    )
+    
+    for t in threadArray do t.Start()
+    for t in threadArray do t.Join()
+
+    if (threadNumber * step) < n then
+        multiplicationInRange res matrix1 matrix2 (threadNumber * step) (n - 1)
+    res
+
+
 //the 49th task
 
-//sorts given interval in array by merging
-let sortInRange (arr : int []) start1 start2 n =
+//merges two parts of array
+let merge (arr : int []) start1 start2 n =
     let mutable p1  = start1
     let mutable p2  = start2
     let mutable res = []
@@ -121,27 +157,39 @@ let sortInRange (arr : int []) start1 start2 n =
     for i = 0 to res.Length - 1 do
         arr.[i + start1] <- res.[i]
 
+//sorts given interval in array by merging
+let sortInRange (arr : int []) left right =
+    let mutable pow = 2
+    
+    while pow <= (right - left) do
+        for i = 0 to (right - left + 1) / pow - 1 do
+            merge arr (i * pow + left) (i * pow + pow / 2 + left) pow
+        pow <- pow * 2
+
+    pow <- pow / 2
+    if pow <= right then
+        merge arr left (pow + left) (right - left + 1)
+
 //sorts array in ascending order
-let mergeSort (arr : int []) =
+let mergeSort (arr : int []) threadNumber =
     let n    = arr.Length
-    let step = ref 2
+    let step = n / threadNumber
     
-    while step.Value < n do
-        let start = ref -step.Value
-        let threadArray = Array.init (n / step.Value) (fun i ->
-            new Thread(ThreadStart(fun _ ->
-                start := start.Value + step.Value
-                sortInRange arr start.Value (start.Value + step.Value / 2) step.Value
-            ))
-        )
+    let threadArray = Array.init threadNumber (fun i ->
+        new Thread(ThreadStart(fun _ ->
+            sortInRange arr (i * step) ((i + 1) * step - 1)
+        ))
+    )
     
-        for t in threadArray do t.Start()
-        for t in threadArray do t.Join()
-        step := step.Value * 2
-    
-    step := step.Value / 2
-    if (step.Value) < n then 
-        sortInRange arr 0 step.Value n
+    for t in threadArray do t.Start()
+    for t in threadArray do t.Join()
+
+    for i = 0 to threadNumber - 2 do
+        merge arr 0 ((i + 1) * step) ((i + 2) * step)
+
+    if (threadNumber * step) < n then
+        sortInRange arr (threadNumber * step) (n - 1)
+        merge arr 0 (threadNumber * step) n
     arr
 
 

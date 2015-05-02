@@ -7,6 +7,8 @@
 
 (47). Параллельный определенный интеграл (10 баллов).
 
+(48). **Bonus:** Параллельное перемножение матриц (10 баллов).
+
 (49). **Bonus:** Параллельный MergeSort (15 баллов).
 
 Для запуска выполните `./configure`, а затем `./build.fsx`
@@ -23,7 +25,9 @@ ______________________________
 
 (47). Find value of definite integral using threads (10 points).
 
-(49). **Bonus:** Merge sort using threads (15 points).
+(48). **Bonus:** Parallel matrix multiplication (10 points).
+
+(49). **Bonus:** Parallel MergeSort (15 points).
 
 To start, run `./configure` and then `./build.fsx`
 
