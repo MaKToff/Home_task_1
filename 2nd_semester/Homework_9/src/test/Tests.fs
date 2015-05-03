@@ -11,55 +11,60 @@ open NUnit.Framework
 open Program
 
 //tests for 46th task
-[<TestCase ([|7|], 7, 1)>]
-[<TestCase ([|1; -2; 3; -4; 9; -5; 6; -7; 8; 0|], 9, 10)>]
-[<TestCase ([|-1; -2; -3; -4; -5; -6; -7; -8; -9|], -1, 9)>]
-let ``Test for task #46 01`` (arr : int []) value n =
-    for i = 1 to n do
+[<TestCase ([|1; -2; 3; -4; 9; -5; 6; -7; 8; 0|], 9)>]
+[<TestCase ([|-100; -53; -1; -4; -21; -7; -9|], -1)>]
+let ``Test for task #46 01`` (arr : int []) value =
+    for i = 1 to arr.Length do
         Assert.AreEqual(value, maxElem arr i)
 
 [<Test>]
 let ``Test for task #46 02`` () =
-    let arr = Array.init 1000 (fun i -> 1)
-    for i = 1 to 100 do
-        Assert.AreEqual(1, maxElem arr i)
+    let n = 10000000
+    let arr = Array.init n (fun i -> System.Random(0).Next(0, n))
+    for i = 0 to 3 do
+        Assert.AreEqual(7262432, maxElem arr (pown 2 i))
 
 [<Test>]
 let ``Test for task #46 03`` () =
-    let n = 1000000
-    let arr = Array.init n (fun i -> System.Random(0).Next(0, n))
-    for i = 1 to 100 do
-        Assert.AreEqual(726243, maxElem arr i)
+    let arr = Array.init 100000000 (fun i -> -i)
+    for i = 0 to 3 do
+        Assert.AreEqual(0, maxElem arr (pown 2 i))
+
+[<Test>]
+let ``Test for task #46 04`` () =
+    let arr = Array.init 200000000 (fun i -> 1)
+    for i = 0 to 3 do
+        Assert.AreEqual(1, maxElem arr (pown 2 i))
 
 
-// | Test                                   | Time (1 thread) | Minimum time     |
-// +========================================+=================+==================+
-// | [|7|]                                  | 13ms            | 13ms (1 thread)  |
-// | [|1; -2; 3; -4; 9; -5; 6; -7; 8; 0|]   | 16ms            | 14ms (2 threads) |
-// | [|-1; -2; -3; -4; -5; -6; -7; -8; -9|] | 14ms            | 14ms (2 threads) |
-// | Test for task #46 02                   | 20ms            | 15ms (2 threads) |
-// | Test for task #46 03                   | 59ms            | 44ms (4 threads) |
+// | Test                                 | 1 thread | 2 threads | 4 threads | 8 threads |
+// +======================================+==========+===========+===========+===========+
+// | [|1; -2; 3; -4; 9; -5; 6; -7; 8; 0|] |   13 ms  |   6 ms    |  13 ms    |  25 ms    |
+// | [|-100; -53; -1; -4; -21; -7; -9|]   |   14 ms  |   7 ms    |  12 ms    |  22 ms    |
+// | Test for task #46 02                 |   78 ms  |  39 ms    |  43 ms    |  63 ms    |
+// | Test for task #46 03                 |  653 ms  | 359 ms    | 381 ms    | 341 ms    |
+// | Test for task #46 04                 | 1304 ms  | 690 ms    | 823 ms    | 732 ms    |
 
 
 //tests for 47th task
 [<TestCase ("x", -5.0, 7.0, 0.0001, 2, 12.0)>]
-[<TestCase ("x", -5.0, 5.0, 0.0001, 3, 0.0)>]
+[<TestCase ("x", -7.0, 7.0, 0.0001, 2, 0.0)>]
 [<TestCase ("5 * ln x", 1.0, 5.0, 0.0001, 2, 20.24)>]
-[<TestCase ("x ^ 2 + 3", 0.0, 3.0, 0.0001, 2, 18.0)>]
-[<TestCase ("sin x + cos x", 0.0, System.Math.PI, 0.0001, 3, 2.0)>]
+[<TestCase ("x ^ 2 + 3", -1.0, 3.0, 0.0001, 1, 21.3)>]
+[<TestCase ("sin x + cos x", 0.0, System.Math.PI, 0.00005, 3, 2.0)>]
 let ``Test for task #47 01`` expression left right precision (digits : int) answer =
     for i = 1 to 10 do
         let result = definiteIntegral expression i left right precision
         Assert.AreEqual(answer, (System.Math.Round(result, digits)))
 
 
-// | Test                              | Time (1 thread) | Minimum time      |
-// +===================================+=================+===================+
-// | "x"             -5.0  7.0  0.0001 | 997ms           | 591ms (8 threads) |
-// | "x"             -5.0  5.0  0.0001 | 834ms           | 526ms (2 threads) |
-// | "5 * ln x"       1.0  5.0  0.0001 | 848ms           | 475ms (2 threads) |
-// | "x ^ 2 + 3"      0.0  3.0  0.0001 | 914ms           | 500ms (4 threads) |
-// | "sin x + cos x"  0.0  pi   0.0001 | 830ms           | 488ms (2 threads) |
+// | Test                               | 1 thread | 2 threads | 4 threads | 8 threads |
+// +====================================+==========+===========+===========+===========+
+// | "x"             -5.0  7.0  0.0001  |  956 ms  |  544 ms   |  558 ms   |  581 ms   |
+// | "x"             -7.0  7.0  0.0001  | 1078 ms  |  669 ms   |  787 ms   |  697 ms   |
+// | "5 * ln x"       1.0  5.0  0.0001  |  825 ms  |  570 ms   |  496 ms   |  577 ms   |
+// | "x ^ 2 + 3"     -1.0  3.0  0.0001  | 1032 ms  |  682 ms   |  686 ms   |  708 ms   |
+// | "sin x + cos x"  0.0  pi   0.00005 | 1707 ms  | 1082 ms   | 1061 ms   | 1101 ms   |
 
 
 //tests for 48th task
@@ -76,8 +81,8 @@ let ``Test for task #48 02`` () =
         [|23; 30; 37; 44|];
         [|35; 46; 57; 68|];
     |]
-    for i = 1 to 3 do
-        Assert.AreEqual(result, matrixMultiplication matrix1 matrix2 i)
+    for i = 0 to 3 do
+        Assert.AreEqual(result, matrixMultiplication matrix1 matrix2 (pown 2 i))
 
 [<Test>]
 let ``Test for task #48 03`` () =
@@ -97,14 +102,14 @@ let ``Test for task #48 03`` () =
         [|-30; 16;  -50; -62;   0|];
         [| 79; 87;  -46;  23;  22|];
     |]
-    for i = 1 to 3 do
-        Assert.AreEqual(result, matrixMultiplication matrix1 matrix2 i)
+    for i = 0 to 3 do
+        Assert.AreEqual(result, matrixMultiplication matrix1 matrix2 (pown 2 i))
 
 [<Test>]
 let ``Test for task #48 04`` () =
-    let matrix1 = Array.init 100 (fun i -> Array.init 1000 (fun j -> 1))
-    let matrix2 = Array.init 1000 (fun i -> Array.init 100 (fun j -> 1))
-    let result  = Array.init 100 (fun i -> Array.init 100 (fun j -> 1000))
+    let matrix1 = Array.init 200 (fun i -> Array.init 2000 (fun j -> 1))
+    let matrix2 = Array.init 2000 (fun i -> Array.init 200 (fun j -> 1))
+    let result  = Array.init 200 (fun i -> Array.init 200 (fun j -> 2000))
     for i = 1 to 10 do
         Assert.AreEqual(result, matrixMultiplication matrix1 matrix2 i)
 
@@ -113,42 +118,54 @@ let ``Test for task #48 05`` () =
     let matrix1 = Array.init 500 (fun i -> Array.init 500 (fun j -> 1))
     let matrix2 = Array.init 500 (fun i -> Array.init 500 (fun j -> 1))
     let result  = Array.init 500 (fun i -> Array.init 500 (fun j -> 500))
-    Assert.AreEqual(result, matrixMultiplication matrix1 matrix2 1)
-    Assert.AreEqual(result, matrixMultiplication matrix1 matrix2 2)
-    Assert.AreEqual(result, matrixMultiplication matrix1 matrix2 4)
+    for i = 0 to 3 do
+        Assert.AreEqual(result, matrixMultiplication matrix1 matrix2 (pown 2 i))
 
 
-// | Test                 | Time (1 thread) | Minimum time      |
-// +======================+=================+===================+
-// | Test for task #48 01 | 15ms            | 15ms  (1 thread)  |
-// | Test for task #48 02 | 19ms            | 17ms  (2 threads) |
-// | Test for task #48 03 | 27ms            | 19ms  (2 threads) |
-// | Test for task #48 04 | 159ms           | 86ms  (2 threads) |
-// | Test for task #48 05 | 1860ms          | 942ms (2 threads) |
+// | Test                 | 1 thread | 2 threads | 4 threads | 8 threads |
+// +======================+==========+===========+===========+===========+
+// | Test for task #48 01 |   14 ms  |   7 ms    |   20 ms   |   31 ms   |
+// | Test for task #48 02 |   14 ms  |   8 ms    |   15 ms   |   30 ms   |
+// | Test for task #48 03 |   28 ms  |  11 ms    |   25 ms   |   43 ms   |
+// | Test for task #48 04 | 1414 ms  | 711 ms    |  814 ms   |  804 ms   |
+// | Test for task #48 05 | 1885 ms  | 965 ms    | 1153 ms   | 1171 ms   |
 
 
 //tests for 49th task
-[<TestCase ([|3|], [|3|])>]
-[<TestCase ([|4; 3; 2; 1|], [|1; 2; 3; 4|])>]
 [<TestCase ([|-1; 4; -17; 3; 8|], [|-17; -1; 3; 4; 8;|])>]
 [<TestCase ([|9; 2; 3; 8; 5; 7; 4; 6; 1|], [|1; 2; 3; 4; 5; 6; 7; 8; 9|])>]
 let ``Test for task #49 01`` (arr : int []) (result : int []) =
     for i = 1 to arr.Length do
-        let temp = arr
+        let temp = Array.copy arr
         Assert.AreEqual(result, mergeSort temp i)
 
 [<Test>]
 let ``Test for task #49 02`` () =
-    let arr = Array.init 5000 (fun i -> i)
-    Assert.AreEqual(arr, mergeSort arr 1)
-    Assert.AreEqual(arr, mergeSort arr 2)
-    Assert.AreEqual(arr, mergeSort arr 4)
+    let arr = Array.init 100000 (fun i -> i)
+    for i = 0 to 3 do
+        let temp = Array.copy arr
+        Assert.AreEqual(arr, mergeSort temp (pown 2 i))
+
+[<Test>]
+let ``Test for task #49 03`` () =
+    let arr = Array.init 500000 (fun i -> 500000 - i)
+    let res = Array.init 500000 (fun i -> i + 1)
+    for i = 0 to 3 do
+        let temp = Array.copy arr
+        Assert.AreEqual(res, mergeSort temp (pown 2 i))
+
+[<Test>]
+let ``Test for task #49 04`` () =
+    let arr = Array.init 1000000 (fun i -> 1)
+    for i = 0 to 3 do
+        let temp = Array.copy arr
+        Assert.AreEqual(arr, mergeSort temp (pown 2 i))
 
 
-// | Test                          | Time (1 thread) | Minimum time      |
-// +===============================+=================+===================+
-// | [|3|]                         | 13ms            | 13ms  (1 thread)  |
-// | [|4; 3; 2; 1|]                | 17ms            | 16ms  (2 threads) |
-// | [|-1; 4; -17; 3; 8|]          | 19ms            | 17ms  (2 threads) |
-// | [|9; 2; 3; 8; 5; 7; 4; 6; 1|] | 21ms            | 18ms  (2 threads) |
-// | Test for task #49 02          | 1193ms          | 930ms (2 threads) |
+// | Test                          | 1 thread | 2 threads | 4 threads | 8 threads |
+// +===============================+==========+===========+===========+===========+
+// | [|-1; 4; -17; 3; 8|]          |   23 ms  |    9 ms   |   17 ms   |   33 ms   |
+// | [|9; 2; 3; 8; 5; 7; 4; 6; 1|] |   24 ms  |    9 ms   |   16 ms   |   26 ms   |
+// | Test for task #49 02          |  541 ms  |  312 ms   |  403 ms   |  424 ms   |
+// | Test for task #49 03          | 2821 ms  | 1643 ms   | 1750 ms   | 2054 ms   |
+// | Test for task #49 04          | 5177 ms  | 3123 ms   | 3611 ms   | 4349 ms   |

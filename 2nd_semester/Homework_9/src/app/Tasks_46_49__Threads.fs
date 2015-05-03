@@ -136,45 +136,51 @@ let matrixMultiplication (matrix1 : int [][]) (matrix2 : int [][]) threadNumber 
 let merge (arr : int []) start1 start2 n =
     let mutable p1  = start1
     let mutable p2  = start2
-    let mutable res = []
+    let result = new Stack<int>()
 
     for i = 0 to n - 1 do
         if p2 < start1 + n then
             if arr.[p1] < arr.[p2] then
                 if p1 < start2 then
-                    res <- List.append res [arr.[p1]]
+                    result.push(arr.[p1])
                     p1 <- p1 + 1
                 else
-                    res <- List.append res [arr.[p2]]
+                    result.push(arr.[p2])
                     p2 <- p2 + 1
             else
-                res <- List.append res [arr.[p2]]
+                result.push(arr.[p2])
                 p2 <- p2 + 1
         else
-            res <- List.append res [arr.[p1]]
+            result.push(arr.[p1])
             p1 <- p1 + 1
     
-    for i = 0 to res.Length - 1 do
-        arr.[i + start1] <- res.[i]
+    let mutable i = n - 1 + start1
+    while not result.isEmpty do
+        arr.[i] <- result.pop()
+        i <- i - 1
 
 //sorts given interval in array by merging
 let sortInRange (arr : int []) left right =
+    let n = right - left + 1
     let mutable pow = 2
     
-    while pow <= (right - left) do
-        for i = 0 to (right - left + 1) / pow - 1 do
+    while pow <= n - 1 do
+        let m = n / pow
+        for i = 0 to m - 1 do
             merge arr (i * pow + left) (i * pow + pow / 2 + left) pow
+        if (m * pow + left) <= right then
+            merge arr ((m - 1) * pow + left) (m * pow + left) (pow + n - m * pow)
         pow <- pow * 2
 
     pow <- pow / 2
     if pow <= right then
-        merge arr left (pow + left) (right - left + 1)
+        merge arr left (pow + left) n
 
 //sorts array in ascending order
 let mergeSort (arr : int []) threadNumber =
     let n    = arr.Length
     let step = n / threadNumber
-    
+
     let threadArray = Array.init threadNumber (fun i ->
         new Thread(ThreadStart(fun _ ->
             sortInRange arr (i * step) ((i + 1) * step - 1)
