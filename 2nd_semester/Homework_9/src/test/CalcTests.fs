@@ -1,5 +1,5 @@
 ﻿(*
-Homework 8 (20.04.2015)
+Homework 9 (27.04.2015)
 Tests for calculator
 
 Author: Mikhail Kita, group 171

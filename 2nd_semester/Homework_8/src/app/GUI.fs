@@ -8,6 +8,7 @@ Author: Mikhail Kita, group 171
 open System.Windows.Forms
 open System.Drawing
 open Calc
+open Plotter
 
 let mutable expression = "0"
 let mutable memory = "0"
@@ -23,17 +24,20 @@ let setupMenu =
     let helpMenuItem    = new ToolStripMenuItem("Help")
     let exitMenuItem    = new ToolStripMenuItem("Exit")
     let aboutMenuItem   = new ToolStripMenuItem("About")
+    let plotterMenuItem = new ToolStripMenuItem("Run plotter")
  
-    exitMenuItem.Click.Add  (fun e -> Application.Exit())
-    aboutMenuItem.Click.Add (fun e ->
+    exitMenuItem.Click.Add    (fun e -> Application.Exit())
+    plotterMenuItem.Click.Add (fun e -> plotterForm.ShowDialog() |> ignore)
+    aboutMenuItem.Click.Add   (fun e ->
         MessageBox.Show(" 
             Homework 8 (20.04.2015)
 
             Author: Mikhail Kita", "About") |> ignore
     )
 
-    fileMenuItem.DropDown.Items.Add(exitMenuItem)  |> ignore
-    helpMenuItem.DropDown.Items.Add(aboutMenuItem) |> ignore
+    fileMenuItem.DropDown.Items.Add(plotterMenuItem) |> ignore
+    fileMenuItem.DropDown.Items.Add(exitMenuItem)    |> ignore
+    helpMenuItem.DropDown.Items.Add(aboutMenuItem)   |> ignore
     
     menu.Items.Add(fileMenuItem)    |> ignore
     menu.Items.Add(helpMenuItem)    |> ignore
@@ -112,21 +116,14 @@ let numberButton value x y =
     button
 
 let operationButton value x y =
-    
-    //computes value of expression
-    let tryToCompute expr =
-        try 
-            compute(expr)
-        with
-        | :? ListIsEmpty      -> "Error"
-        | :? InvalidOperation -> "Invalid operation" 
-    
+
     //computes trigonometrical function with correct angle 
     let findCorrect value =
+        let temp = value + " " + expression
         match groupBox.TabIndex with 
-        | 0 -> expression <- tryToCompute(value + " " + expression + " * " + pi + " / 180")
-        | 1 -> expression <- tryToCompute(value + " " + expression)
-        | _ -> expression <- tryToCompute(value + " " + expression + " * " + pi + " / 200")
+        | 0 -> expression <- tryToCompute (temp + " * " + pi + " / 180")
+        | 1 -> expression <- tryToCompute temp
+        | _ -> expression <- tryToCompute (temp + " * " + pi + " / 200")
     
     let button = new Button()
     if value = "=" then button.Size <- Size(40, 75)
@@ -208,9 +205,9 @@ let operationButton value x y =
 
 let mainForm =
     let form = new Form(Visible = false)
-    form.MaximizeBox <- false 
-    form.MaximumSize <- Size(390, 385)
+    form.MaximizeBox <- false
     form.MinimumSize <- Size(390, 385)
+    form.MaximumSize <- Size(390, 385)
     form.Text        <- "Calculator"
     form.Font        <- new Font("Arial", 10.0f)
     form.BackColor   <- Color.LightGray

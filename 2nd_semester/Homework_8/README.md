@@ -5,13 +5,15 @@
 
 (42). Калькулятор (15 баллов).
 
-(43). Bonus: Научный калькулятор (10 баллов).
+(43). **Bonus:** Научный калькулятор (10 баллов).
+
+(44). **Bonus:** Построитель графиков (15 баллов).
 
 Для запуска выполните `./configure`, а затем `./build.fsx`
 
 ### Время на выполнение проекта
-* Ожидаемое: 20ч
-* Реальное: 23ч
+* Ожидаемое: 27ч
+* Реальное: 30ч
 
 ______________________________
 
@@ -19,10 +21,12 @@ ______________________________
 
 (42). Calculator (15 points).
 
-(43). Bonus: Scientific calculator (10 points).
+(43). **Bonus:** Scientific calculator (10 points).
+
+(44). **Bonus:** Plotter (15 points).
 
 To start, run `./configure` and then `./build.fsx`
 
 ### Time on implementation of project
-* Expected: 20h
-* Real: 23h
+* Expected: 27h
+* Real: 30h
