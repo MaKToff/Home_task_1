@@ -13,10 +13,9 @@ add x | x == 0    = id
       | otherwise = (add $ inc x).dec
 
 --multiplication of two numbers
-mult x y | x == 0 || y == 0 = 0
-         | y > 0            = add x (mult x $ dec y)
-         | x > 0            = add y (mult (dec x) y)
-         | otherwise        = add (-x) (mult x $ inc y)
+mult x y | x == 0    = 0
+         | x > 0     = add y (mult (dec x) y)
+         | otherwise = add (-y) (mult (inc x) y)
 
 --greatest common divider
 gcd' a b | a == 0 || b == 0 = a + b
