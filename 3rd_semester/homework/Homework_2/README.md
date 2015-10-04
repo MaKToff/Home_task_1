@@ -1,7 +1,7 @@
 ﻿Homework_1 (14.09.2015)
 =======================
 
-### Первое домашнее задание (от 7 сентября)
+### Первое домашнее задание (от 14 сентября)
 
 1. Взять первые n элементов списка
 2. Удалить повторяющиеся значения
@@ -11,7 +11,7 @@
 
 ______________________________
 
-### The first homework (from 7th of September):
+### The first homework (from 14th of September):
 
 1. Function which takes n first elements from list
 2. Function for deletion repeated values
