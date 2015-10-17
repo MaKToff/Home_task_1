@@ -4,7 +4,7 @@ data L a = N | E (L a) (L a) | O (L a) a (L a) deriving (Show)
 length' :: L a -> Int
 length' N = 0
 length' (E first second) = length' first + length' second
-length' (O first a second) = 1 + length' first + length' second
+length' (O first _ second) = 1 + length' first + length' second
 
 -- checks that list is correct
 wf :: L a -> Bool
