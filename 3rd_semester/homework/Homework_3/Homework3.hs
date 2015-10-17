@@ -9,8 +9,8 @@ length' (O first a second) = 1 + length' first + length' second
 -- checks that list is correct
 wf :: L a -> Bool
 wf N = True
-wf (E first second) = length' first == length' second
-wf (O first a second) = length' first == length' second
+wf (E first second) = length' first == length' second && wf first && wf second
+wf (O first _ second) = length' first == length' second && wf first && wf second
 
 -- converts a standard list to list in new notation
 of_list :: [a] -> L a
