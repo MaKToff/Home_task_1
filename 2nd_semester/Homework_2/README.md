@@ -1,7 +1,7 @@
 ﻿Homework_2 (02.03.2015)
 =======================
 
-### Второе домашнее задание (от 2 марта):
+### Второе домашнее задание
 
 (9). Выписать тип `List.iter` (1 балл).
 
@@ -31,15 +31,15 @@
 
 ______________________________
 
-### The second homework (of 2 March):
+### The second homework
 
 (9). Write out the type of `List.iter` (1 point).
 
 (10). Reverse list using fold (1 point).
 
-(11). Write `List.filter` using fold (1 point).
+(11). Implement `List.filter` using fold (1 point).
 
-(12). Write `List.map` using fold (1 point).
+(12). Implement `List.map` using fold (1 point).
 
 (13). Implement Horner's method using fold. The input is a list of coefficients and the value of the variable (3 points).
 

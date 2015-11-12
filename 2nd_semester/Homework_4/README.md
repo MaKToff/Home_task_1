@@ -1,7 +1,7 @@
 ﻿Homework_4 (23.03.2015)
 =======================
 
-### Четвёртое домашнее задание (от 23 марта):
+### Четвёртое домашнее задание
 
 (31). Unit-тесты для задач 23, 24 (2 балла).
 
@@ -11,7 +11,7 @@
 
 (34). Unit-тесты для реализаций интерфейса полиморфного списка на массиве (2 балла).
 
-(35). Калькулятор выражений (+, -, *, /, %, ^, скобки ) Пример: вход — ”1 + (2 / 3) ^2”, выход — 1. (6 баллов)
+(35). Калькулятор выражений (+, -, *, /, %, ^, скобки ). Пример: вход — ”1 + (2 / 3) ^2”, выход — 1. (6 баллов)
 
 (36). Калькулятор выражений, в которых есть переменные. Для вычисления также передается *контекст*, содержащий информацию о значениях переменных (5 баллов).
 
@@ -21,7 +21,7 @@
 
 ______________________________
 
-### The fourth homework (on March 23):
+### The fourth homework
 
 (31). Unit-tests for tasks 23, 24 (2 points).
 
@@ -33,7 +33,7 @@ ______________________________
 
 (35). Сalculator for expressions (+, -, *, /, %, ^, brackets ). Example: input- ”1 + (2 / 3) ^2”, output - 1. (6 points)
 
-(36). Calculator for expressions that have variables. For the calculations is also passed to the *context* that contains information about the values of variables (5 points).
+(36). Calculator for expressions which have variables. For the calculations is also passed to the *context* that contains information about the values of variables (5 points).
 
 ### Time on implementation of project
 * Expected: 17h

@@ -1,12 +1,12 @@
 ﻿Homework_1
 ===========
 
-#### Первое домашнее задание.
+#### Первое домашнее задание
  
-Работа с битовыми операциями
+Работа с битовыми операциями.
 
 _____________________________
 
-#### The first homework. 
+#### The first homework
 
-Work with binary operations
+Binary operations.

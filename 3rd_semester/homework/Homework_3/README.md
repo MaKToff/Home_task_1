@@ -1,7 +1,7 @@
 ﻿Homework_3 (05.10.2015)
 =======================
 
-### Третье домашнее задание (от 5 октября)
+### Третье домашнее задание
 
 Дан список вида `L a = N | E (L a) (L a) | O (L a) a (L a)`. Необходимо реализовать следующие функции.
 
@@ -18,7 +18,7 @@ ______________________________
 
 ### The third homework (from 5th of October):
 
-Given a list in the form `L a = N | E (L a) (L a) | O (L a) a (L a)`. Implement following functions.
+The list has type `L a = N | E (L a) (L a) | O (a L) a (L a)`. Implement the following functions.
 
 1. Length of list.
 2. Check that list is correct.
@@ -26,5 +26,5 @@ Given a list in the form `L a = N | E (L a) (L a) | O (L a) a (L a)`. Implement 
 4. Convert list in new notation to a standard list.
 5. Merge of two lists.
 6. Reverse of list.
-7. Map
-8. Foldl / foldr
+7. Map.
+8. Foldl / foldr.

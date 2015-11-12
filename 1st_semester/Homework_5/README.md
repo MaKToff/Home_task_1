@@ -1,12 +1,12 @@
 ﻿Homework_5
 ===========
 
-#### Пятое домашнее задание.
+#### Пятое домашнее задание
 
 Реализовать простой односвязный список.
 
 _______________________________________
 
-#### The 5th homework. 
+#### The 5th homework
 
-Write simple linked list.
+Implement simple linked list.

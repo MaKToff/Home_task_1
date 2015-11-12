@@ -1,7 +1,7 @@
 ﻿Homework_7 (13.04.2015)
 =======================
 
-### Седьмое домашнее задание (от 13 апреля):
+### Седьмое домашнее задание
 
 (40). Реализовать Workflow, выполняющий математические вычисления в кольце вычетов по модулю n, где n — аргумент Builder'а (10 баллов).
 
@@ -15,11 +15,11 @@
 
 ______________________________
 
-### The seventh homework (on April 13):
+### The seventh homework
 
 (40). Implement Workflow which performs mathematical computations in the ring of residues modulo n, where n is the argument of Builder (10 points).
 
-(41). Implement Workflow on binary trees. Should be reasonable methods *Bind*, *Combine*, *Yield/Return* and examples of functions implemented on this Workflow (filter, map, ...) (15 points).
+(41). Implement Workflow on binary trees. Solution should contain reasonable methods *Bind*, *Combine*, *Yield/Return* and examples of functions implemented on this Workflow (filter, map, ...) (15 points).
 
 To start, run `./configure` and then `./build.fsx`
 

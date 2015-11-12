@@ -1,12 +1,12 @@
 ﻿Homework_6
 ===========
 
-#### Шестое домашнее задание.
+#### Шестое домашнее задание
 
 Реализовать на основе односвязного списка калькулятор для сложения и вычитания длинных чисел.
 
 _____________________________________________________________________________________________
 
-#### The 6th homework. 
+#### The 6th homework
 
-Write calculator based on linked list for addition and subtraction long numbers.
+Implement calculator based on linked list for addition and subtraction of long numbers.
