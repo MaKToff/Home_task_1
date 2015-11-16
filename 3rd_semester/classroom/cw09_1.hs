@@ -16,15 +16,13 @@ boundingBox :: F -> (Point, R, R) -- вычисляет ограничивающ
                                   -- задаваемый координатой левого верхнего угла,
                                   -- размером по горизонтали, размером по вертикали
 
-boundingBox (C (a, b) c) = ((a - c, b + c), 2 * c, 2 * c)
-boundingBox (S (a, b) c) = ((a - c / 2, b + c / 2), c, c)
-boundingBox (R (a, b) c d) = ((a - c / 2, b + d / 2), c, d)
-boundingBox (M (l:ls)) = let ((x, y), h, v) = boundingBox l in getRectangle ((x, y), h + x, y - v) ls where
-    getRectangle ((a, b), c, d) [] = ((a, b), c - a, b - d)
-    getRectangle ((a, b), c ,d) (w:ws) = let ((a', b'), c', d') = boundingBox w
-                                         in getRectangle ((min a a', max b b'), max c (c' + a'), min d (b' - d')) ws
-
-instance Show F where
-    show f = 
-        let ((x, y), h, v) = boundingBox f 
-        in "(" ++ show x ++ ", " ++ show y ++ ") " ++ show h ++ " " ++ show v
+boundingBox (C (x, y) r)   = ((x - r, x + r), d, d) where d = 2 * r
+boundingBox (S (x, y) a)   = ((x - h, x + h), a, a) where h = a / 2
+boundingBox (R (x, y) h v) = ((x - h / 2, y + v / 2), h, v)
+boundingBox (M (x:xs))     = foldl union (boundingBox x) $ map boundingBox xs where
+    union b1@(p1, _, _) b2@(p2, _, _) = (p, xp' - xp, yp - yp') where
+        p@(xp, yp)          = m p1 p2
+        (xp', yp')          = swap $ m (swap $ br b1) (swap $ br b2)
+        m (x1, y1) (x2, y2) = (min x1 x2, max y1 y2)
+        br ((x, y), h, v)   = (x + h, y - v)
+        swap (x, y)         = (y, x)
