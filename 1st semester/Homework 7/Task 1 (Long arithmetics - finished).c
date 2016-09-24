@@ -16,7 +16,7 @@ int arithm_start(number **num1, number **num2, number **result)
 
 	// Reading the expression
 	scanf("%c", &first_digit);
-	if (first_digit == '#') //user wants to close application
+	if (first_digit == '#') // User wants to close the application
 		return 1;
 
 	longNum_read(num1, first_digit, &ok);

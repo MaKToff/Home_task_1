@@ -6,7 +6,7 @@ Author: Mikhail Kita, group 171
 *)
 
 // The 9th task
-let t = List.iter //val t : (('a -> unit) ->'a list -> unit) 
+let t = List.iter // val t : (('a -> unit) ->'a list -> unit) 
 
 // The 10th task
 let list_reverse list = 

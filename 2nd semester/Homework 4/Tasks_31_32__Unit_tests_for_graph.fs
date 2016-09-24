@@ -66,11 +66,11 @@ let haveAccessTo (graph : IGraph<'A>) node =
 
 // The 31st task
 
-//(1) ← (2) → (6)
-// ↓     ↑
-//(5) ← (4) ← (8)
-// ↑     ↓     ↓
-//(7) → (9) ↔ (3)
+// (1) ← (2) → (6)
+//  ↓     ↑
+// (5) ← (4) ← (8)
+//  ↑     ↓     ↓
+// (7) → (9) ↔ (3)
 
 let fls = false
 let example = [|5; 8; 3; 9; 2; 1; 4; 7; 6;|]
@@ -245,8 +245,8 @@ let OSList =
     [ "Linux"; "Windows"; "FreeBSD"; "OS X"; "Linux"; "Windows"; 
         "Linux"; "Windows"; "OS X"; "FreeBSD"]
 
-[<TestCase ( 1.0, Result =  2)>] //probability of infection = 0
-[<TestCase (-1.0, Result = 10)>] //probability of infection = 1
+[<TestCase ( 1.0, Result =  2)>] // Probability of infection = 0
+[<TestCase (-1.0, Result = 10)>] // Probability of infection = 1
 let ``Test 01: branched local network`` correction =
     let labels = [| fls; true; fls; fls; fls; fls; fls; true; fls; fls |]
     let aList = 

@@ -22,7 +22,7 @@ int calc_start(stack_node **stack_head, number **value, number **num1, number **
 		operation = '\0';
 		scanf("%c", &first_digit);
 
-		if (first_digit == '#') //user wants to close application
+		if (first_digit == '#') // User wants to close the application
 			return 1;
 
 		else if (first_digit == '=')
