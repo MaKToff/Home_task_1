@@ -6,7 +6,7 @@ Author: Mikhail Kita, group 171
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "Stack.h"
+#include "stack.h"
 
 // Processes commands and calls necessary functions
 int calc_start(stack_node **stack_head, number **value, number **num1, number **num2, number **result, char *trash)

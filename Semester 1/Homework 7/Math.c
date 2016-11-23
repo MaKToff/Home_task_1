@@ -5,7 +5,7 @@ Author: Mikhail Kita, group 171
 */
 
 #include <stdio.h>
-#include "Math.h"
+#include "math.h"
 
 // Executes addition of two numbers
 void longNum_sum(number **num1, number **num2, number **result)

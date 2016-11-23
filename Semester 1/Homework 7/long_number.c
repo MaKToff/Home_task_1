@@ -6,7 +6,7 @@ Author: Mikhail Kita, group 171
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "Long number.h"
+#include "long_number.h"
 
 // Executes the initial declaration of a number variable
 number* longNum_init()

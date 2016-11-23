@@ -6,7 +6,7 @@ Author: Mikhail Kita, group 171
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "Linked list.h"
+#include "linked_list.h"
 
 // Deletes given intList
 void intList_delete(intList_node **head)

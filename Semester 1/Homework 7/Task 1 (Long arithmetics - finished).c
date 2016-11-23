@@ -6,7 +6,7 @@ Author: Mikhail Kita, group 171
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "Math.h"
+#include "math.h"
 
 // Reads an expression and calls the appropriate command
 int arithm_start(number **num1, number **num2, number **result)

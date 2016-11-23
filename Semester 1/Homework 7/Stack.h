@@ -4,7 +4,7 @@ Declaring functions for stack.
 Author: Mikhail Kita, group 171
 */
 
-#include "Math.h"
+#include "math.h"
 
 typedef struct stack_node
 {

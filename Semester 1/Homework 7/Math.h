@@ -4,7 +4,7 @@ Declaring functions of mathematics for long numbers.
 Author: Mikhail Kita, group 171
 */
 
-#include "Long number.h"
+#include "long_number.h"
 
 // Executes addition of two numbers
 void longNum_sum(number **num1, number **num2, number **result);

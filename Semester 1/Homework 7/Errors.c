@@ -5,7 +5,7 @@ Author: Mikhail Kita, group 171
 */
 
 #include <stdio.h>
-#include "Errors.h"
+#include "errors.h"
 
 // Prints message about error
 void error(int value)

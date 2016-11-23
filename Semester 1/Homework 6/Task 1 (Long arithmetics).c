@@ -6,7 +6,7 @@ Author: Mikhail Kita, group 171
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "Linked list.h"
+#include "linked_list.h"
 
 typedef struct number
 {

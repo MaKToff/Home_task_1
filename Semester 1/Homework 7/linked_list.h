@@ -4,7 +4,7 @@ Declaring functions for linked list.
 Author: Mikhail Kita, group 171
 */
 
-#include "Errors.h"
+#include "errors.h"
 
 typedef struct intList_node
 {

@@ -4,7 +4,7 @@ Declaring functions for long numbers.
 Author: Mikhail Kita, group 171
 */
 
-#include "Linked list.h"
+#include "linked_list.h"
 
 typedef struct number
 {

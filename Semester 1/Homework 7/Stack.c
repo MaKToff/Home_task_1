@@ -7,7 +7,7 @@ Author: Mikhail Kita, group 171
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "Stack.h"
+#include "stack.h"
 
 // Deletes all elements from the stack
 void stack_delete(stack_node **head)
