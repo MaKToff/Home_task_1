@@ -66,7 +66,7 @@ for (user, friends) in mine_friends.items():
         links_count += 1
         max_id = max(max_id, friend)
 
-print("Max id:", max_id, ",", links_count, " links")
+print(f"Max id: {max_id}, {links_count} links")
 print_time(start)
 
 
@@ -145,8 +145,7 @@ with open(os.path.join(results_path, "prediction.csv"), 'w') as output:
         data = graph_reloaded.data[ptr:ptr_next]
         indices = graph_reloaded.indices[ptr:ptr_next]
 
-        dates = list(map(lambda x: float(dates_reloaded[x]), graph_reloaded.indices[ptr:ptr_next]))
-        
+        dates = [float(dates_reloaded[x]) for x in indices]
         schoolmates = [float(dates_reloaded[indices[i]]) for i in range(0, n) if data[i] & 2 ** 10]
         university_fellows = [float(dates_reloaded[indices[i]]) for i in range(0, n) if data[i] & 2 ** 14]
 
