@@ -6,7 +6,4 @@ Natural language processing
 ### Запуск
 
 * Извлечь данные в папку data
-* Запустить скрипт:
-	```bash
-	python lang_detect.py
-	```
+* Запустить `lang_detect.py`
