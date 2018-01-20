@@ -20,6 +20,9 @@ text_sample_size = 140
 
 
 def define_alphabet():
+    """
+    Creates a list of unique characters from all alphabets.
+    """
     all_lang_chars = ''
 
     for language in language_alphabet.values():
@@ -32,4 +35,6 @@ def define_alphabet():
 
 
 alphabet = define_alphabet()
-print(f"Alphabet: {alphabet}")
+char_index = {c: i for i, c in enumerate(alphabet)}
+
+print("Alphabet:", alphabet)

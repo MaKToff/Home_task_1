@@ -1,5 +1,4 @@
 import os
-
 import keras
 import numpy as np
 from sklearn import preprocessing
@@ -7,25 +6,29 @@ from sklearn.model_selection import train_test_split
 from lang_config import *
 
 
-# region Sampling and generating input vectors for the NN
-
-# Counts number of chars in text based on given alphabet
 def count_chars(text):
-    alphabet_counts = []
+    """
+    Counts number of chars in text based on given alphabet.
+    """
+    alphabet_counts = [0] * len(alphabet)
 
-    for letter in alphabet:
-        count = text.count(letter)
-        alphabet_counts.append(count)
+    for char in text:
+        index = char_index.get(char, -1)
+
+        if index >= 0:
+            alphabet_counts[index] += 1
 
     return alphabet_counts
 
 
 def get_sample(file_content, start_index, sample_size):
-    """Returns a sample of text from `file_content` of length no more than `sample_size`, starting at `start_index`
-    and preserving full words."""
+    """
+    Returns a sample of text from `file_content` of length no more than `sample_size`,
+    starting at `start_index` and preserving full words.
+    """
     # we want to start from full first word
     # if the first character is not space, move to next ones
-    while not (file_content[start_index].isspace()):
+    while not file_content[start_index].isspace():
         start_index += 1
 
     # now we look for first non-space character - beginning of any word
@@ -35,15 +38,17 @@ def get_sample(file_content, start_index, sample_size):
     end_index = min(len(file_content) - 1, start_index + sample_size)
 
     # we also want full words at the end
-    while not (file_content[end_index].isspace()):
+    while not file_content[end_index].isspace():
         end_index -= 1
 
     return file_content[start_index:end_index]
 
 
 def build_input_vector(sample_text):
-    """Creates an input vector for the NN from the provided sample.
-    Currently it is the vector of letter counts."""
+    """
+    Creates an input vector for the NN from the provided sample.
+    Currently it is the vector of letter counts.
+    """
     return count_chars(sample_text.lower())
 
 
@@ -51,6 +56,9 @@ vector_size = len(build_input_vector(""))
 
 
 def create_sample_vectors(cleaned_data_directory, out_vectors_path):
+    """
+    Generates input vectors for the NN.
+    """
     vectors = []
 
     for filename in os.listdir(cleaned_data_directory):
@@ -60,7 +68,7 @@ def create_sample_vectors(cleaned_data_directory, out_vectors_path):
         path = os.path.join(cleaned_data_directory, filename)
         f = open(path, mode='r', encoding='utf8')
 
-        print(f"Processing {path}")
+        print("Processing", path)
 
         lang = filename[:2]
         lang_number = language_codes.index(lang)
@@ -93,6 +101,7 @@ def create_sample_vectors(cleaned_data_directory, out_vectors_path):
     print(f"Total {len(vectors)} vectors.")
 
     np_vectors = np.array(vectors, dtype=np.uint16)
+    np.random.shuffle(np_vectors)
 
     print(f"Converted to NumPy array, shape: {np_vectors.shape}.")
 
@@ -101,18 +110,19 @@ def create_sample_vectors(cleaned_data_directory, out_vectors_path):
     print(f"Saved to {out_vectors_path}.")
 
 
-# endregion
+def size_kb(path):
+    """
+    Returns file size in KB.
+    """
+    size = os.path.getsize(path)
 
-# region Generating train/test data, with preprocessing
-
-def size_kb(size):
-    """Utility function, returns file size in KB"""
-    size = '{:.2f}'.format(size / 1000.0)
-
-    return f"{size} KB"
+    return '{:.2f}'.format(size / 1000.0)
 
 
 def gen_train_test(vectors_path, out_train_test_path):
+    """
+    Generates train/test data with preprocessing.
+    """
     data = np.load(vectors_path)['data']
     x = data[:, 0:vector_size]
     y = data[:, vector_size]
@@ -134,8 +144,6 @@ def gen_train_test(vectors_path, out_train_test_path):
 
     np.savez_compressed(out_train_test_path, X_train=x_train, y_train=y_train, X_test=x_test, y_test=y_test)
 
-    print(f"Saved train/test data to {out_train_test_path}, size: {size_kb(os.path.getsize(out_train_test_path))} KB.")
+    print(f"Saved train/test data to {out_train_test_path}, size: {size_kb(out_train_test_path)} KB.")
 
     del x_train, y_train, x_test, y_test
-
-# endregion
